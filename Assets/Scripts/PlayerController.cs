@@ -10,6 +10,7 @@ public class PlayerControler : MonoBehaviour
     Vector2 movement;
     Rigidbody2D rb;
     bool isGrounded = true;
+    int currScale = 0;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -28,12 +29,30 @@ public class PlayerControler : MonoBehaviour
     }
 
     void OnJump()
-    {
-        Debug.Log(isGrounded);
-        
+    {      
         if (isGrounded)
         {
-            rb.AddForce(new Vector2(0, 500));
+            rb.AddForce(new Vector2(0, 250));
+        }
+    }
+
+    void OnChangeBigger()
+    {
+        if (currScale != 1)
+        {
+            transform.localScale *= 2;
+            rb.mass *= 2;
+            currScale++;
+        }
+    }
+
+    void OnChangeSmaller()
+    {
+        if (currScale != -1)
+        {
+            transform.localScale *= 0.5f;
+            rb.mass *= 0.5f;
+            currScale--;
         }
     }
 
