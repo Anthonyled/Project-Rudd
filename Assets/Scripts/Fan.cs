@@ -6,27 +6,28 @@ using UnityEngine.UIElements;
 
 public class Fan : MonoBehaviour
 {
-    [SerializeField] GameObject player;
-    Rigidbody2D rb;
-    bool applyInitialVelocity = true;
-    void Start()
-    {
-        rb = player.GetComponent<Rigidbody2D>();
-    }
-    
+    [SerializeField] PlayerController player;
+    [SerializeField] int effectiveDistance;
+    bool inEffect = false;
+
     void Update()
     {
-        if (rb.position.y > transform.position.y - 0.5 && rb.position.y < transform.position.y + 0.5)
+        if (player.GetPosition().y > transform.position.y - 0.5 && player.GetPosition().y < transform.position.y + 0.5 &&
+            player.GetPosition().x - transform.position.x < effectiveDistance / player.GetMass() && player.GetPosition().x - transform.position.x > 0)
         {
-            if (applyInitialVelocity)
+            player.SetVelocity(new Vector2(5, Mathf.Max(0, player.GetVelocity().y)));
+            player.lockMovement = true;
+            inEffect = true;
+
+        }
+        else
+        {
+            if (inEffect)
             {
-                rb.velocity = new Vector2(rb.velocity.x + 5, rb.velocity.y / 50);
-                applyInitialVelocity = false;
+                player.lockMovement = false;
+                player.SetVelocity(new Vector2(0, 0));
+                inEffect = false;
             }
-            rb.AddForce(new Vector2(1 / ((rb.position.x - transform.position.x)), 0));
-        } else
-        {
-            applyInitialVelocity = true;
         }
     }
 }
