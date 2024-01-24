@@ -26,7 +26,10 @@ public class PlayerController : MonoBehaviour
         {
             movement = Vector2.zero;
         }
-        rb.position += movement * speed * Time.deltaTime;
+        if (rb.velocity.x < speed)
+        {
+            rb.AddForce(movement);
+        }
     }
 
     public Vector2 GetPosition()
@@ -81,9 +84,11 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != 1)
         {
+            Vector2 p = rb.mass * rb.velocity;
             transform.localScale *= 2;
             rb.mass *= 2;
             currScale++;
+            rb.velocity = p / rb.mass;
         }
     }
 
@@ -91,9 +96,11 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != -1)
         {
+            Vector2 p = rb.mass * rb.velocity;
             transform.localScale *= 0.5f;
             rb.mass *= 0.5f;
             currScale--;
+            rb.velocity = p / rb.mass;
         }
     }
 
