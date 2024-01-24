@@ -30,8 +30,27 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(movement);
         }
-    }
 
+    }
+    IEnumerator ScaleAnimation(float time, float scale)
+    {
+        float i = 0;
+        float rate = 1 / time;
+
+        Vector2 fromScale = transform.localScale;
+        Vector2 toScale = fromScale * scale;
+        float mass = rb.mass;
+        while (i < 1)
+        {
+            i += Time.deltaTime * rate;
+            Vector2 p = rb.mass * rb.velocity;
+            transform.localScale = Vector2.Lerp(fromScale, toScale, i);
+            rb.mass = Mathf.Lerp(mass, mass * scale, i);
+            rb.velocity = p / rb.mass;
+            Debug.Log(rb.mass);
+            yield return 0;
+        }
+    }
     public Vector2 GetPosition()
     {
         return rb.position;
@@ -84,11 +103,8 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != 1)
         {
-            Vector2 p = rb.mass * rb.velocity;
-            transform.localScale *= 2;
-            rb.mass *= 2;
+            StartCoroutine(ScaleAnimation(1, 2f));
             currScale++;
-            rb.velocity = p / rb.mass;
         }
     }
 
@@ -96,11 +112,8 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != -1)
         {
-            Vector2 p = rb.mass * rb.velocity;
-            transform.localScale *= 0.5f;
-            rb.mass *= 0.5f;
+            StartCoroutine(ScaleAnimation(1, 0.5f));
             currScale--;
-            rb.velocity = p / rb.mass;
         }
     }
 
