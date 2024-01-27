@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded = true;
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
+    private bool sizeChanging = false;
 
     
     void Start()
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour
         float i = 0;
         float rate = 1 / time;
 
+        Debug.Log("SizeChanging in coroutine: " + sizeChanging);
+
         Vector2 fromScale = transform.localScale;
         Vector2 toScale = fromScale * scale;
         float mass = rb.mass;
@@ -50,6 +53,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log(rb.mass);
             yield return 0;
         }
+
+        sizeChanging = false;
     }
     public Vector2 GetPosition()
     {
@@ -101,19 +106,21 @@ public class PlayerController : MonoBehaviour
 
     private void OnChangeBigger()
     {
-        if (currScale != 1)
+        if (currScale != 1 && !sizeChanging)
         {
-            StartCoroutine(ScaleAnimation(1, 2f));
             currScale++;
+            sizeChanging = true;
+            StartCoroutine(ScaleAnimation(1, 2f));
         }
     }
 
     private void OnChangeSmaller()
     {
-        if (currScale != -1)
+        if (currScale != -1 && !sizeChanging)
         {
-            StartCoroutine(ScaleAnimation(1, 0.5f));
             currScale--;
+            sizeChanging = true;
+            StartCoroutine(ScaleAnimation(1, 0.5f));
         }
     }
 
