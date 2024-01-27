@@ -8,7 +8,10 @@ public class PlayerController : MonoBehaviour
 {
     public bool lockMovement = false;
 
-    [SerializeField] int speed;
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float growShrinkScale = 2f;
+    [SerializeField] private float transformationTime = 0.75f;
     private Vector2 movement;
     private Rigidbody2D rb;
     private bool isGrounded = true;
@@ -27,7 +30,7 @@ public class PlayerController : MonoBehaviour
         {
             movement = Vector2.zero;
         }
-        if (rb.velocity.x < speed)
+        if (Mathf.Abs(rb.velocity.x) < speed)
         {
             rb.AddForce(movement);
         }
@@ -37,8 +40,6 @@ public class PlayerController : MonoBehaviour
     {
         float i = 0;
         float rate = 1 / time;
-
-        Debug.Log("SizeChanging in coroutine: " + sizeChanging);
 
         Vector2 fromScale = transform.localScale;
         Vector2 toScale = fromScale * scale;
@@ -50,7 +51,6 @@ public class PlayerController : MonoBehaviour
             transform.localScale = Vector2.Lerp(fromScale, toScale, i);
             rb.mass = Mathf.Lerp(mass, mass * scale, i);
             rb.velocity = p / rb.mass;
-            Debug.Log(rb.mass);
             yield return 0;
         }
 
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
     // Input handling
     private void OnMove(InputValue MovementValue)
     {
-        if (!lockMovement && (isGrounded || currScale == 0))
+        if (!lockMovement)
         {
             Vector2 movementVector = MovementValue.Get<Vector2>().normalized;
             movement = new Vector2(movementVector.x, 0);
@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
     {      
         if (isGrounded)
         {
-            rb.AddForce(new Vector2(0, 150));
+            rb.AddForce(new Vector2(0, jumpForce));
         }
     }
 
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
         {
             currScale++;
             sizeChanging = true;
-            StartCoroutine(ScaleAnimation(1, 2f));
+            StartCoroutine(ScaleAnimation(transformationTime, growShrinkScale));
         }
     }
 
@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour
         {
             currScale--;
             sizeChanging = true;
-            StartCoroutine(ScaleAnimation(1, 0.5f));
+            StartCoroutine(ScaleAnimation(transformationTime, 1/growShrinkScale));
         }
     }
 
