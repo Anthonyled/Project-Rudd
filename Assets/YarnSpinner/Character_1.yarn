@@ -1,0 +1,30 @@
+﻿title: Character_1
+tags:
+position: -75,-439
+---
+Character_1: dialogue line 1, asks a question to player
+-> player answer option 1
+    <<jump response_1>>
+-> player answer option 2
+    <<jump response_2>>
+-> player answer option 3
+    <<jump response_3>>
+===
+
+title: response_1
+position: -323,-152
+---
+character answers player option 1
+===
+
+title: response_2
+position: -72,-129
+---
+character answers player option 2
+===
+
+title: response_3
+position: 204,-226
+---
+character answers player option 3
+===
