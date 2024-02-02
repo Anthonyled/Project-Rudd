@@ -11,10 +11,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int speed;
     private Vector2 movement;
     private Rigidbody2D rb;
-    private bool isGrounded = true;
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
+    private bool isFacingRight = true;
 
-    
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
+
+    private bool isWallJumping;
+    private float wallJumpDirection;
+    private float wallJumpTime = 0.2f;
+    private float wallJumpTimer;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -22,16 +35,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (lockMovement)
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
-            movement = Vector2.zero;
-        }
-        if (rb.velocity.x < speed)
-        {
-            rb.AddForce(movement);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
 
+        WallSlide();
+        WallJump();
+        if (!isWallJumping)
+        {
+            Flip();
+        }
     }
+
+    private void FixedUpdate()
+    {
+        if (!isWallJumping)
+        {
+            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+        }
+    }
+
     IEnumerator ScaleAnimation(float time, float scale)
     {
         float i = 0;
@@ -47,10 +71,116 @@ public class PlayerController : MonoBehaviour
             transform.localScale = Vector2.Lerp(fromScale, toScale, i);
             rb.mass = Mathf.Lerp(mass, mass * scale, i);
             rb.velocity = p / rb.mass;
-            Debug.Log(rb.mass);
             yield return 0;
         }
     }
+    
+    // Input handling
+    private void OnMove(InputValue MovementValue)
+    {
+        Vector2 movementVector = MovementValue.Get<Vector2>().normalized;
+        movement = new Vector2(movementVector.x, 0);
+    }
+
+    private void OnJump()
+    {      
+        if (IsGrounded())
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 16);
+        }
+
+        if (wallJumpTimer > 0f)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpDirection * wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpTimer = 0f;
+
+            if (transform.localScale.x != wallJumpDirection)
+            {
+                isFacingRight = !isFacingRight;
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            }
+
+            Invoke(nameof(StopWallJumping), 0.4f);
+        }
+    }
+
+    private void OnChangeBigger()
+    {
+        if (currScale != 1)
+        {
+            StartCoroutine(ScaleAnimation(1, 2f));
+            currScale++;
+        }
+    }
+
+    private void OnChangeSmaller()
+    {
+        if (currScale != -1)
+        {
+            StartCoroutine(ScaleAnimation(1, 0.5f));
+            currScale--;
+        }
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    private bool IsWalled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void WallSlide()
+    {
+        if (IsWalled() && !IsGrounded() && movement.x != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+    private void WallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpDirection = -transform.localScale.x;
+            wallJumpTimer = wallJumpTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpTimer -= Time.deltaTime;
+        }
+    }
+    private void StopWallJumping()
+    {
+        isWallJumping = false;
+    }
+
+    private void Flip()
+    {
+        if (isFacingRight && movement.x < 0f || !isFacingRight && movement.x > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
+
+
+
+
+
     public Vector2 GetPosition()
     {
         return rb.position;
@@ -79,58 +209,5 @@ public class PlayerController : MonoBehaviour
     public void SetVelocity(Vector2 velocity)
     {
         rb.velocity = velocity;
-    }
-    
-    // Input handling
-    private void OnMove(InputValue MovementValue)
-    {
-        if (!lockMovement && (isGrounded || currScale == 0))
-        {
-            Vector2 movementVector = MovementValue.Get<Vector2>().normalized;
-            movement = new Vector2(movementVector.x, 0);
-        } 
-    }
-
-    private void OnJump()
-    {      
-        if (isGrounded)
-        {
-            rb.AddForce(new Vector2(0, 150));
-        }
-    }
-
-    private void OnChangeBigger()
-    {
-        if (currScale != 1)
-        {
-            StartCoroutine(ScaleAnimation(1, 2f));
-            currScale++;
-        }
-    }
-
-    private void OnChangeSmaller()
-    {
-        if (currScale != -1)
-        {
-            StartCoroutine(ScaleAnimation(1, 0.5f));
-            currScale--;
-        }
-    }
-
-    // Prevention of double jumps
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
     }
 }
