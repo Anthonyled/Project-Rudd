@@ -9,25 +9,22 @@ public class IcePlatform : MonoBehaviour
     bool breakPlatform = false;
     float startTime;
 
-    public void Update()
-    {
-        if (breakPlatform && (Time.time - startTime > timeToBreak))
-        {
-            gameObject.SetActive(false);
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
+
         if (other.CompareTag("Player"))
         {
             if (!breakPlatform)
             {
+                Invoke(nameof(BreakPlatform), timeToBreak);
                 breakPlatform = true;
-                startTime = Time.time;
             }
         }
-        
+    }
+
+    private void BreakPlatform()
+    {
+        gameObject.SetActive(false);
     }
 
 }

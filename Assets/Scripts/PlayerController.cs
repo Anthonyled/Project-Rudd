@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public bool lockMovement = false;
 
-    [SerializeField] int speed;
+    [SerializeField] float speed;
+    [SerializeField] float maxSpeed;
     private Vector2 movement;
     private Rigidbody2D rb;
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
     private bool isFacingRight = true;
+    private bool canScale = true;
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
@@ -21,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private float wallJumpDirection;
     private float wallJumpTime = 0.2f;
     private float wallJumpTimer;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private Vector2 wallJumpingPower = new Vector2(4f, 12f);
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
@@ -46,18 +49,25 @@ public class PlayerController : MonoBehaviour
         {
             Flip();
         }
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+        }
     }
 
     private void FixedUpdate()
     {
         if (!isWallJumping)
         {
-            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+            rb.AddForce(new Vector2(movement.x * speed, 0));
         }
     }
 
     IEnumerator ScaleAnimation(float time, float scale)
     {
+        canScale = false;
+        Invoke(nameof(UnlockScaling), time);
         float i = 0;
         float rate = 1 / time;
 
@@ -75,6 +85,11 @@ public class PlayerController : MonoBehaviour
         }
     }
     
+    private void UnlockScaling()
+    {
+        canScale = true;
+    }
+
     // Input handling
     private void OnMove(InputValue MovementValue)
     {
@@ -86,7 +101,7 @@ public class PlayerController : MonoBehaviour
     {      
         if (IsGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x, 16);
+            rb.velocity = new Vector2(rb.velocity.x, 12);
         }
 
         if (wallJumpTimer > 0f)
@@ -107,7 +122,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnChangeBigger()
     {
-        if (currScale != 1)
+        if (currScale != 1 && canScale)
         {
             StartCoroutine(ScaleAnimation(1, 2f));
             currScale++;
@@ -116,7 +131,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnChangeSmaller()
     {
-        if (currScale != -1)
+        if (currScale != -1 && canScale)
         {
             StartCoroutine(ScaleAnimation(1, 0.5f));
             currScale--;
