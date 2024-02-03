@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isWallJumping)
+        if (!isWallJumping && !lockMovement)
         {
             rb.AddForce(new Vector2(movement.x * speed, 0));
         }
