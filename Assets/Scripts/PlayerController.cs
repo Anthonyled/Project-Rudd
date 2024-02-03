@@ -83,8 +83,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = p / rb.mass;
             yield return 0;
         }
-
-        sizeChanging = false;
     }
     
     private void UnlockScaling()
