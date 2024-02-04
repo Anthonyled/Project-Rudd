@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Fan : MonoBehaviour
+public class VerticalFan : MonoBehaviour
 {
     [SerializeField] PlayerController player;
     [SerializeField] int effectiveDistance;
@@ -12,10 +12,10 @@ public class Fan : MonoBehaviour
 
     void Update()
     {
-        if (player.GetPosition().y > transform.position.y - 0.5 && player.GetPosition().y < transform.position.y + 0.5 &&
-            player.GetPosition().x - transform.position.x < effectiveDistance && player.GetPosition().x - transform.position.x > 0)
+        if (player.GetPosition().x > transform.position.x - 0.5 && player.GetPosition().x < transform.position.x + 0.5 &&
+            player.GetPosition().y - transform.position.y < effectiveDistance / player.GetMass() && player.GetPosition().y - transform.position.y > 0)
         {
-            player.SetVelocity(new Vector2(10, Mathf.Max(0, player.GetVelocity().y)));
+            player.SetVelocity(new Vector2(Mathf.Max(0, player.GetVelocity().x), 10));
             player.lockMovement = true;
             inEffect = true;
         }

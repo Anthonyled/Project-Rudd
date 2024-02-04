@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -66,13 +67,12 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ScaleAnimation(float time, float scale)
     {
-        canScale = false;
         Invoke(nameof(UnlockScaling), time);
         float i = 0;
         float rate = 1 / time;
-
         Vector2 fromScale = transform.localScale;
-        Vector2 toScale = fromScale * scale;
+        Vector2 toScale = transform.localScale * scale;
+
         float mass = rb.mass;
         while (i < 1)
         {
@@ -124,7 +124,9 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != 1 && canScale)
         {
+            canScale = false;
             StartCoroutine(ScaleAnimation(1, 2f));
+            speed *= 1.5f;
             currScale++;
         }
     }
@@ -133,8 +135,10 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != -1 && canScale)
         {
+            canScale = false;
             StartCoroutine(ScaleAnimation(1, 0.5f));
             currScale--;
+            speed /= 1.5f;
         }
     }
 
@@ -183,7 +187,7 @@ public class PlayerController : MonoBehaviour
 
     private void Flip()
     {
-        if (isFacingRight && movement.x < 0f || !isFacingRight && movement.x > 0f)
+        if (movement.x < 0 && transform.localScale.x > 0 || movement.x > 0 && transform.localScale.x < 0)
         {
             isFacingRight = !isFacingRight;
             Vector3 localScale = transform.localScale;
