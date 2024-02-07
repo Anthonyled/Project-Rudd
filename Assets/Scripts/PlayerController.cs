@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 movement;
     private Rigidbody2D rb;
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
-    private bool isFacingRight = true;
+    public bool isFacingRight = true;
     private bool canScale = true;
 
     private bool isWallSliding;

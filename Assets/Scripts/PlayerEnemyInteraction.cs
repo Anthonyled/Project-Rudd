@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerEnemyInteraction : MonoBehaviour
 {
@@ -13,7 +14,14 @@ public class PlayerEnemyInteraction : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Enemy")) {
-            rb.transform.position = new Vector3(-5.97f,3.27f,0);
+            die();
         }
+    }
+
+    public void die() {
+        // reset scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        // load next level
+        // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
