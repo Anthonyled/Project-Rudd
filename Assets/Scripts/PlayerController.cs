@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
     public bool isFacingRight = true;
     private bool canScale = true;
+    [SerializeField] Vector2 respawnCoords;
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
@@ -55,6 +56,11 @@ public class PlayerController : MonoBehaviour
             CheckForFlip(); // Flip character if movement doesn't match current direction
         }
 
+        if (rb.position.y < -10)
+        {
+            rb.position = respawnCoords;
+            rb.velocity = Vector2.zero;
+        }
         // if (rb.velocity.magnitude > maxSpeed)
         // {
         //     rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
@@ -213,7 +219,14 @@ public class PlayerController : MonoBehaviour
         transform.localScale = localScale;
     }
 
-
+    private void OnTriggerEnter2D (Collider2D other)
+    {
+        if (other.CompareTag("Goal"))
+        {
+            rb.position = respawnCoords;
+            rb.velocity = Vector2.zero;
+        }
+    }
 
 
 
