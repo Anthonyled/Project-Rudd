@@ -247,6 +247,17 @@
                     "action": "ChangeSmaller",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d239629d-8ba5-4caa-b1e3-0f6d9108e2b5",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ChangeSmaller",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
