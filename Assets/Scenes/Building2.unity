@@ -190,7 +190,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4817452583995883188, guid: 985c0b4659fa2496d866df276b26f454, type: 3}
       propertyPath: buildingName
-      value: Street1
+      value: Street2
       objectReference: {fileID: 0}
     - target: {fileID: 871121475718105383, guid: 985c0b4659fa2496d866df276b26f454, type: 3}
       propertyPath: m_IsTrigger

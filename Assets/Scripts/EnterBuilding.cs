@@ -7,11 +7,12 @@ using UnityEngine.InputSystem;
 public class EnterBuilding : MonoBehaviour
 {
     private bool inBuilding = false;
+    [SerializeField] string buildingName;
 
     public void Update() {
         
         if (inBuilding && Input.GetButtonDown("EnterBuilding")) {
-            SceneManager.LoadScene("Building1");
+            SceneManager.LoadScene(buildingName);
         }
     }
 
