@@ -61,10 +61,10 @@ public class PlayerController : MonoBehaviour
             rb.position = respawnCoords;
             rb.velocity = Vector2.zero;
         }
-        // if (rb.velocity.magnitude > maxSpeed)
-        // {
-        //     rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
-        // }
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+        }
     }
 
     private void FixedUpdate()
