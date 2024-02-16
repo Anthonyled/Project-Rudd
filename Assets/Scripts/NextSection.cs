@@ -5,12 +5,12 @@ using UnityEngine.Events;
 public class NextSection : MonoBehaviour
 {
 
-    [SerializeField] private UnityEvent enterSectionTwo;
+    [SerializeField] private UnityEvent enterNextSection;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            enterSectionTwo?.Invoke();
+            enterNextSection?.Invoke();
         }
     }
 }
