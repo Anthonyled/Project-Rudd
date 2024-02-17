@@ -199,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9093649235814985746, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
       propertyPath: m_SortingOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -584,6 +584,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 997522232}
   - {fileID: 1188096385}
-  - {fileID: 950113155}
   - {fileID: 7628907811514577715}
   - {fileID: 1477680577}
+  - {fileID: 950113155}
