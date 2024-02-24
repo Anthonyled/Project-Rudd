@@ -1,5 +1,9 @@
+// Something is weird with how gravity scale and speed affect each other. Currently, the big form cannot
+// move without jumping. Something to do with friction.
+
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,11 +15,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] float speed;
     [SerializeField] float maxSpeed;
+    [SerializeField] float jumpHeight;
     private Vector2 movement;
     private Rigidbody2D rb;
     private int currScale = 0; // -1 == small, 0 == normal, 1 == big
-    private bool isFacingRight = true;
+    public bool isFacingRight = true;
     private bool canScale = true;
+    [SerializeField] Vector2 respawnCoords;
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
@@ -36,20 +42,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-
-
     void Update()
     {
-        speed = 5f;
-        // Get input from the horizontal axis
-        float horizontalInput = Input.GetAxis("Horizontal");
-
-        // Calculate the movement direction
-        Vector3 movement = new Vector3(horizontalInput, 0f, 0f);
-
-        // Move the player
-        transform.Translate(movement * speed * Time.deltaTime);
-
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
@@ -57,20 +51,25 @@ public class PlayerController : MonoBehaviour
 
         WallSlide();
         WallJump();
-        if (!isWallJumping)
+        if (!isWallJumping) // Face same way during wall jump
         {
-            Flip();
+            CheckForFlip(); // Flip character if movement doesn't match current direction
         }
 
-        if (rb.velocity.magnitude > maxSpeed)
+        if (rb.position.y < -10)
         {
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+            rb.position = respawnCoords;
+            rb.velocity = Vector2.zero;
         }
+        // if (rb.velocity.magnitude > maxSpeed)
+        // {
+        //     rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+        // }
     }
 
     private void FixedUpdate()
     {
-        if (!isWallJumping)
+        if (!isWallJumping && !lockMovement)
         {
             rb.AddForce(new Vector2(movement.x * speed, 0));
         }
@@ -78,24 +77,31 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ScaleAnimation(float time, float scale)
     {
-        canScale = false;
         Invoke(nameof(UnlockScaling), time);
         float i = 0;
         float rate = 1 / time;
-
         Vector2 fromScale = transform.localScale;
-        Vector2 toScale = fromScale * scale;
-        float mass = rb.mass;
+        Vector2 toScale = transform.localScale * scale;
+
+        float startingMass = rb.mass;
+        float startingGravityScale = rb.gravityScale;
         while (i < 1)
         {
-            i += Time.deltaTime * rate;
-            Vector2 p = rb.mass * rb.velocity;
-            transform.localScale = Vector2.Lerp(fromScale, toScale, i);
-            rb.mass = Mathf.Lerp(mass, mass * scale, i);
-            rb.velocity = p / rb.mass;
+            i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
+            Vector2 p = rb.mass * rb.velocity; // What does this do? -Zach
+            
+            Vector2 newScale = Vector2.Lerp(fromScale, toScale, i); // Lerp does a linear scale from the start to end
+            if (!isFacingRight)
+            {
+                newScale.x *= -1; // Face left
+            }
+            transform.localScale = newScale;
+            rb.mass = Mathf.Lerp(startingMass, startingMass * scale, i);
+            rb.velocity = p / rb.mass; // What does this do? -Zach
+
+            rb.gravityScale = Mathf.Lerp(startingGravityScale, startingGravityScale * scale, i); // Scale gravity
             yield return 0;
         }
-
     }
     
     private void UnlockScaling()
@@ -114,7 +120,7 @@ public class PlayerController : MonoBehaviour
     {      
         if (IsGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x, 12);
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Sqrt(jumpHeight) * Mathf.Sqrt(rb.gravityScale)); // Makes all sizes jump to same height
         }
 
         if (wallJumpTimer > 0f)
@@ -125,8 +131,7 @@ public class PlayerController : MonoBehaviour
 
             if (transform.localScale.x != wallJumpDirection)
             {
-                isFacingRight = !isFacingRight;
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                Flip();
             }
 
             Invoke(nameof(StopWallJumping), 0.4f);
@@ -137,7 +142,9 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != 1 && canScale)
         {
+            canScale = false;
             StartCoroutine(ScaleAnimation(1, 2f));
+            speed *= 1.5f;
             currScale++;
         }
     }
@@ -146,8 +153,10 @@ public class PlayerController : MonoBehaviour
     {
         if (currScale != -1 && canScale)
         {
+            canScale = false;
             StartCoroutine(ScaleAnimation(1, 0.5f));
             currScale--;
+            speed /= 1.5f;
         }
     }
 
@@ -194,18 +203,30 @@ public class PlayerController : MonoBehaviour
         isWallJumping = false;
     }
 
-    private void Flip()
+    private void CheckForFlip()
     {
-        if (isFacingRight && movement.x < 0f || !isFacingRight && movement.x > 0f)
+        if (movement.x < 0 && transform.localScale.x > 0 || movement.x > 0 && transform.localScale.x < 0)
         {
-            isFacingRight = !isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1f;
-            transform.localScale = localScale;
+            Flip();
         }
     }
 
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1f;
+        transform.localScale = localScale;
+    }
 
+    private void OnTriggerEnter2D (Collider2D other)
+    {
+        if (other.CompareTag("Goal"))
+        {
+            rb.position = respawnCoords;
+            rb.velocity = Vector2.zero;
+        }
+    }
 
 
 
