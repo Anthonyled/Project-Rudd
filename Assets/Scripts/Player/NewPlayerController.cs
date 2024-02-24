@@ -24,17 +24,55 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpBufferTime = 0.3f;
     [SerializeField] float jumpCoyoteTime = 0.08f;
 
+    [Header("Sizeshifting")]
+
+    [Header("Small")]
+    [SerializeField] float smallMass;
+    [SerializeField] float smallMoveSpeed;
+    [SerializeField] float smallAcceleration;
+    [SerializeField] float smallJumpHeight;
+    [SerializeField] float smallGravity;
+
+    [Header("Medium")]
+    [SerializeField] float mediumMass;
+    [SerializeField] float mediumMoveSpeed;
+    [SerializeField] float mediumAcceleration;
+    [SerializeField] float mediumJumpHeight;
+    [SerializeField] float mediumGravity;
+
+    [Header("Big")]
+    [SerializeField] float bigMass;
+    [SerializeField] float bigMoveSpeed;
+    [SerializeField] float bigAcceleration;
+    [SerializeField] float bigJumpHeight;
+    [SerializeField] float bigGravity;
+
     private bool isFacingRight;
     
+    // Jumping
     private float lastGroundedTime;
     private float lastJumpTime;
     private bool isJumping;
     public bool jumpInputReleased;
+
     private bool controlsActive;
+
     private bool fallThroughPlatforms;
     private Coroutine fallThroughPlatformsCoroutine;
 
     private GameObject currentOneWayPlatform;
+
+    // Sizeshifting variables
+    [SerializeField] float transformationTime;
+
+    private int curSize = Medium;
+    private bool canScale = true;
+    enum size
+    {
+        Small,
+        Medium,
+        Big
+    }
 
     private void Awake()
     {
@@ -250,5 +288,133 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 GetMoveVal()
     {
         return moveVal;
+    }
+
+    // Sizeshifting Functions
+
+    public void OnChangeBigger(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (curSize != Big && canScale)
+            {
+                ChangeBigger();
+            }
+        }
+    }
+
+    public void OnChangeSmaller(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (curSize != Small && canScale)
+            {
+                ChangeSmaller();
+            }
+        }
+    }
+
+    private void ChangeBigger()
+    {
+        canScale = false;
+
+        size endSize;
+        if (curSize == Small) {
+            endSize = Medium;
+        }
+        else if (curSize == Medium) {
+            endSize = Big;
+        } // curSize shouldn't ever be Big
+
+        StartCoroutine(ScaleAnimation(curSize, endSize));
+        curSize = endSize; // May need to change later
+        // Possibly increase speed somehow
+    }
+
+    private void ChangeSmaller()
+    {
+        canScale = false;
+
+        size endSize;
+        if (curSize == Big) {
+            endSize = Medium;
+        }
+        else if (curSize == Medium) {
+            endSize = Small;
+        } // curSize shouldn't ever be Small
+
+        StartCoroutine(ScaleAnimation(curSize, endSize));
+        curSize = endSize; // May need to change later
+        // Possibly increase speed somehow
+    }
+
+    IEnumerator ScaleAnimation(size startSize, size endSize)
+    {
+        Invoke(nameof(UnlockScaling), transformationTime);
+        float i = 0;
+        float rate = 1 / transformationTime;
+        
+        // Feel free to clean this section up if there's a better way to store these values
+        if (startSize == Small)
+        {
+            float startMass = smallMass;
+            float startMovespeed = smallMoveSpeed;
+            float startAcceleration = smallAcceleration;
+            float startJumpHeight = smallJumpHeight;
+            float startGravity = smallGravity;
+        }
+        if (startSize == Medium)
+        {
+            float startMass = mediumMass;
+            float startMovespeed = mediumMoveSpeed;
+            float startAcceleration = mediumAcceleration;
+            float startJumpHeight = mediumJumpHeight;
+            float startGravity = mediumGravity;
+        }
+        if (startSize == Big)
+        {
+            float startMass = bigMass;
+            float startMovespeed = bigMoveSpeed;
+            float startAcceleration = bigAcceleration;
+            float startJumpHeight = bigJumpHeight;
+            float startGravity = bigGravity;
+        }
+
+        if (endSize == Big)
+        {
+            float endMass = bigMass;
+            float endMovespeed = bigMoveSpeed;
+            float endAcceleration = bigAcceleration;
+            float endJumpHeight = bigJumpHeight;
+            float endGravity = bigGravity;
+        }
+
+        Vector2 fromScale = transform.localScale;
+        Vector2 toScale = transform.localScale * scale;
+
+        float startingMass = rb.mass;
+        float startingGravityScale = rb.gravityScale;
+        while (i < 1)
+        {
+            i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
+            Vector2 p = rb.mass * rb.velocity; // What does this do? -Zach
+            
+            Vector2 newScale = Vector2.Lerp(fromScale, toScale, i); // Lerp does a linear scale from the start to end
+            if (!isFacingRight)
+            {
+                newScale.x *= -1; // Face left
+            }
+            transform.localScale = newScale;
+            rb.mass = Mathf.Lerp(startingMass, startingMass * scale, i);
+            rb.velocity = p / rb.mass; // What does this do? -Zach
+
+            rb.gravityScale = Mathf.Lerp(startingGravityScale, startingGravityScale * scale, i); // Scale gravity
+            yield return 0;
+        }
+    }
+
+    private void UnlockScaling()
+    {
+        canScale = true;
     }
 }

@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
         while (i < 1)
         {
             i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
-            Vector2 p = rb.mass * rb.velocity; // What does this do? -Zach
+            Vector2 p = rb.mass * rb.velocity;
             
             Vector2 newScale = Vector2.Lerp(fromScale, toScale, i); // Lerp does a linear scale from the start to end
             if (!isFacingRight)
@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
             }
             transform.localScale = newScale;
             rb.mass = Mathf.Lerp(startingMass, startingMass * scale, i);
-            rb.velocity = p / rb.mass; // What does this do? -Zach
+            rb.velocity = p / rb.mass;
 
             rb.gravityScale = Mathf.Lerp(startingGravityScale, startingGravityScale * scale, i); // Scale gravity
             yield return 0;
