@@ -36,8 +36,20 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+
+
     void Update()
     {
+        speed = 5f;
+        // Get input from the horizontal axis
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        // Calculate the movement direction
+        Vector3 movement = new Vector3(horizontalInput, 0f, 0f);
+
+        // Move the player
+        transform.Translate(movement * speed * Time.deltaTime);
+
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
@@ -84,7 +96,6 @@ public class PlayerController : MonoBehaviour
             yield return 0;
         }
 
-        sizeChanging = false;
     }
     
     private void UnlockScaling()
