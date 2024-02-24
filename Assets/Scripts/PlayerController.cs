@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -223,8 +224,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Goal"))
         {
-            rb.position = respawnCoords;
-            rb.velocity = Vector2.zero;
+            SceneManager.LoadScene("Building1");
         }
     }
 
