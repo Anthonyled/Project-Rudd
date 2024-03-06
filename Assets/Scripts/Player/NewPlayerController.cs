@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -24,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpCoyoteTime = 0.08f;
 
     [Header("Sizeshifting")]
+
+    [Range(0, 1f)] [SerializeField] float sizeShiftBoostFactor;
 
     [Header("Small")]
     [SerializeField] float smallMass;
@@ -66,6 +69,9 @@ public class PlayerMovement : MonoBehaviour
     private Coroutine fallThroughPlatformsCoroutine;
 
     private GameObject currentOneWayPlatform;
+
+    private bool onIce;
+    [Range(0, 1f)] [SerializeField] float iceSlipperiness;
 
     // Sizeshifting variables
     [SerializeField] float transformationTime;
@@ -116,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
             HandleJump();
             FallThroughPlatforms();
         }
+
+        Debug.Log("Velocity: " + rb.velocity.x);
 
         #region timers
         lastGroundedTime -= Time.deltaTime;
@@ -176,13 +184,6 @@ public class PlayerMovement : MonoBehaviour
         lastJumpTime = 0f;
         isJumping = true;
         jumpInputReleased = false;
-        
-        Debug.Log("Jumpheight: " + jumpHeight);
-        Debug.Log("mass: " + rb.mass);
-        Debug.Log("Gravity scale: " + rb.gravityScale);
-        {
-            
-        }
     }
 
     void Run()
@@ -190,6 +191,9 @@ public class PlayerMovement : MonoBehaviour
         float targetSpeed = moveVal.x * moveSpeed;
         float speedDif = targetSpeed - rb.velocity.x;
         float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+        if (onIce) {
+            accelRate *= iceSlipperiness;
+        }
         float movement = speedDif * accelRate;
 
         rb.AddForce(movement * Vector2.right);
@@ -247,7 +251,6 @@ public class PlayerMovement : MonoBehaviour
     {
         float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
         bool grounded = Physics2D.OverlapCircle(groundCheck.position, overLapRadius, LayerMask.GetMask("Ground"));
-        Debug.Log("IsGrounded: " + grounded);
         return grounded;
     }
 
@@ -285,6 +288,11 @@ public class PlayerMovement : MonoBehaviour
         {
             currentOneWayPlatform = other.gameObject;
         }
+
+        if (other.gameObject.tag == "Ice")
+        {
+            onIce = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
@@ -292,6 +300,11 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.tag == "Platform")
         {
             currentOneWayPlatform = null;
+        }
+
+        if (other.gameObject.tag == "Ice")
+        {
+            onIce = false;
         }
     }
 
@@ -438,10 +451,12 @@ public class PlayerMovement : MonoBehaviour
             endGravity = bigGravity;
         }
         
+        float startVelocity = rb.velocity.x;
+        float endVelocity = startVelocity * (1 + sizeShiftBoostFactor);
+
         while (i < 1)
         {
             i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
-            // Vector2 p = rb.mass * rb.velocity; //fixme
             
             rb.mass = Mathf.Lerp(startMass, endMass, i); // Lerp does a linear scale from the start to end
             moveSpeed = Mathf.Lerp(startMovespeed, endMovespeed, i);
@@ -455,7 +470,11 @@ public class PlayerMovement : MonoBehaviour
             newScale.x = Mathf.Abs(newScale.x) * (isFacingRight ? 1 : -1);
     
             transform.localScale = newScale;
-            // rb.velocity = p / rb.mass; // 
+
+            // Give speed boost if shrinking
+            if (startScale.y > endScale.y) {
+                rb.velocity = new Vector2(Mathf.Lerp(startVelocity, endVelocity, i), rb.velocity.y);
+            }
 
             yield return 0;
         }

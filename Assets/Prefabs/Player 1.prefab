@@ -347,6 +347,7 @@ MonoBehaviour:
   jumpCutMultiplier: 0.5
   jumpBufferTime: 0.3
   jumpCoyoteTime: 0.1
+  sizeShiftBoostFactor: 0.5
   smallMass: 0.5
   smallScale: {x: 1.5, y: 1.5}
   smallMoveSpeed: 10
@@ -365,10 +366,11 @@ MonoBehaviour:
   bigScale: {x: 6, y: 6}
   bigMoveSpeed: 13
   bigAcceleration: 2
-  bigDeceleration: 15
+  bigDeceleration: 25
   bigJumpHeight: 65
   bigGravity: 3
   jumpInputReleased: 0
+  iceSlipperiness: 0.3
   transformationTime: 0.5
 --- !u!1 &6945961529852931148
 GameObject:
