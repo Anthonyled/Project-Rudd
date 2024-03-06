@@ -112,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Run();
             CheckForFlipSprite();
-            Friction();
+            // Friction();
             HandleJump();
             FallThroughPlatforms();
         }
@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
     private void HandleJump()
     {
         //resets grounded timer if on ground
-        if (IsGrounded())
+        if (IsGrounded()) 
         {
             lastGroundedTime = jumpCoyoteTime;
         }
@@ -170,12 +170,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump(float height)
     {
-        float jumpForce = Mathf.Sqrt(height) * Mathf.Sqrt(rb.gravityScale); // Makes all sizes jump to same height
+        float jumpForce = Mathf.Sqrt(height) * Mathf.Sqrt(rb.gravityScale) * rb.mass; // Makes all sizes jump to same height
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         lastGroundedTime = 0f;
         lastJumpTime = 0f;
         isJumping = true;
         jumpInputReleased = false;
+        
+        Debug.Log("Jumpheight: " + jumpHeight);
+        Debug.Log("mass: " + rb.mass);
+        Debug.Log("Gravity scale: " + rb.gravityScale);
+        {
+            
+        }
     }
 
     void Run()
@@ -238,7 +245,9 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        bool grounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, LayerMask.GetMask("Ground"));
+        float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
+        bool grounded = Physics2D.OverlapCircle(groundCheck.position, overLapRadius, LayerMask.GetMask("Ground"));
+        Debug.Log("IsGrounded: " + grounded);
         return grounded;
     }
 
