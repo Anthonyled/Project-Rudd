@@ -236,14 +236,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5219246626094812339, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
-      propertyPath: bigDeceleration
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5219246626094812339, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
-      propertyPath: sizeShiftBoostFactor
-      value: 0.176
-      objectReference: {fileID: 0}
     - target: {fileID: 6710647976949292598, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
       propertyPath: m_Name
       value: Player 1

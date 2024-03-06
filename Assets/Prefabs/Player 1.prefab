@@ -347,31 +347,31 @@ MonoBehaviour:
   jumpCutMultiplier: 0.5
   jumpBufferTime: 0.3
   jumpCoyoteTime: 0.1
-  sizeShiftBoostFactor: 0.5
+  sizeShiftBoostFactor: 1
   smallMass: 0.5
   smallScale: {x: 1.5, y: 1.5}
   smallMoveSpeed: 10
   smallAcceleration: 2
   smallDeceleration: 1.5
   smallJumpHeight: 75
-  smallGravity: 1
+  smallGravity: 2
   mediumMass: 1
   mediumScale: {x: 3, y: 3}
   mediumMoveSpeed: 10
   mediumAcceleration: 5
   mediumDeceleration: 10
   mediumJumpHeight: 70
-  mediumGravity: 2
+  mediumGravity: 4
   bigMass: 2
   bigScale: {x: 6, y: 6}
   bigMoveSpeed: 13
   bigAcceleration: 2
   bigDeceleration: 25
   bigJumpHeight: 65
-  bigGravity: 3
+  bigGravity: 6
   jumpInputReleased: 0
   iceSlipperiness: 0.3
-  transformationTime: 0.5
+  transformationTime: 0.2
 --- !u!1 &6945961529852931148
 GameObject:
   m_ObjectHideFlags: 0
