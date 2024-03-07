@@ -190,7 +190,13 @@ public class PlayerMovement : MonoBehaviour
     {
         float targetSpeed = moveVal.x * moveSpeed;
         float speedDif = targetSpeed - rb.velocity.x;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+
+        float accelRate = acceleration;
+        if (Mathf.Sign(targetSpeed) != Mathf.Sign(rb.velocity.x) || Mathf.Abs(targetSpeed) < 0.01f)
+        {
+            accelRate = deceleration;
+        }
+
         if (onIce) {
             accelRate *= iceSlipperiness;
         }
