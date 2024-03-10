@@ -224,7 +224,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Goal"))
         {
-            SceneManager.LoadScene("Building1");
+            SceneManager.LoadScene("Level1");
         }
     }
 
