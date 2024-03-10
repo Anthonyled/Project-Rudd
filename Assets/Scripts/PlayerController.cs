@@ -13,6 +13,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public bool lockMovement = false;
+    private Animator animator;
 
     [SerializeField] float speed;
     [SerializeField] float maxSpeed;
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -73,6 +75,10 @@ public class PlayerController : MonoBehaviour
         if (!isWallJumping && !lockMovement)
         {
             rb.AddForce(new Vector2(movement.x * speed, 0));
+        }
+        if (movement.x == 0)
+        {
+            animator.SetBool("onMove", false);
         }
     }
 
@@ -115,6 +121,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 movementVector = MovementValue.Get<Vector2>().normalized;
         movement = new Vector2(movementVector.x, 0);
+        animator.SetBool("onMove", true);
     }
 
     private void OnJump()
