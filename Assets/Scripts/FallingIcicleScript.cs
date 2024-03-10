@@ -22,6 +22,9 @@ public class FallingIcicleScript : MonoBehaviour
         if(col.gameObject.CompareTag("Player")) {
             gameObject.SetActive(false);
             Debug.Log("Hit the player!");
+        } else if (col.gameObject.CompareTag("Ground")) {
+            gameObject.SetActive(false);
+            Debug.Log("Hit ground!");
         }
     }
 }
