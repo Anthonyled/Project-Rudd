@@ -16,7 +16,7 @@ public class IcePlatform : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            if (!breakPlatform && player.GetSize() != -1)
+            if (!breakPlatform && player.GetSize() != PlayerController.size.Small)
             {
                 Invoke(nameof(BreakPlatform), timeToBreak);
                 breakPlatform = true;

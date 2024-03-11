@@ -1,6 +1,4 @@
-// Something is weird with how gravity scale and speed affect each other. Currently, the big form cannot
-// move without jumping. Something to do with friction.
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -12,17 +10,87 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public bool lockMovement = false;
     private Animator animator;
 
-    [SerializeField] float speed;
-    [SerializeField] float maxSpeed;
-    [SerializeField] float jumpHeight;
-    private Vector2 movement;
     private Rigidbody2D rb;
-    private int currScale = 0; // -1 == small, 0 == normal, 1 == big
-    public bool isFacingRight = true;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
+
+    private Vector2 moveVal;
+    private float moveSpeed = 10f;
+    private float acceleration = 5f;
+    private float deceleration = 10f;
+    [SerializeField] private float frictionAmount;
+    private float jumpHeight = 70f;
+
+    [Header("Jump")]
+    [Range(0, 1f)][SerializeField] float jumpCutMultiplier = 0.5f;
+    [SerializeField] float jumpBufferTime = 0.3f;
+    [SerializeField] float jumpCoyoteTime = 0.08f;
+
+    [Header("Sizeshifting")]
+
+    [Range(0, 1f)][SerializeField] float sizeShiftBoostFactor;
+
+    [Header("Small")]
+    [SerializeField] float smallMass;
+    [SerializeField] Vector2 smallScale;
+    [SerializeField] float smallMoveSpeed;
+    [SerializeField] float smallAcceleration;
+    [SerializeField] float smallDeceleration;
+    [SerializeField] float smallJumpHeight;
+    [SerializeField] float smallGravity;
+
+    [Header("Medium")]
+    [SerializeField] float mediumMass;
+    [SerializeField] Vector2 mediumScale;
+    [SerializeField] float mediumMoveSpeed;
+    [SerializeField] float mediumAcceleration;
+    [SerializeField] float mediumDeceleration;
+    [SerializeField] float mediumJumpHeight;
+    [SerializeField] float mediumGravity;
+
+    [Header("Big")]
+    [SerializeField] float bigMass;
+    [SerializeField] Vector2 bigScale;
+    [SerializeField] float bigMoveSpeed;
+    [SerializeField] float bigAcceleration;
+    [SerializeField] float bigDeceleration;
+    [SerializeField] float bigJumpHeight;
+    [SerializeField] float bigGravity;
+
+    public bool isFacingRight;
+
+    // Jumping
+    private float lastGroundedTime;
+    private float lastJumpTime;
+    private bool isJumping;
+    public bool jumpInputReleased;
+
+    private bool controlsActive;
+
+    private bool fallThroughPlatforms;
+    private Coroutine fallThroughPlatformsCoroutine;
+
+    private GameObject currentOneWayPlatform;
+
+    private bool onIce;
+    [Range(0, 1f)][SerializeField] float iceSlipperiness;
+
+    // Sizeshifting variables
+    [SerializeField] float transformationTime;
+
+    private size curSize;
     private bool canScale = true;
+    public enum size
+    {
+        Small,
+        Medium,
+        Big
+    };
+
     [SerializeField] Vector2 respawnCoords;
 
     private bool isWallSliding;
@@ -32,31 +100,48 @@ public class PlayerController : MonoBehaviour
     private float wallJumpDirection;
     private float wallJumpTime = 0.2f;
     private float wallJumpTimer;
-    private Vector2 wallJumpingPower = new Vector2(4f, 12f);
+    private Vector2 wallJumpingPower = new Vector2(12f, 12f);
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask wallLayer;
-
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Start()
     {
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
+        if (transform.localScale.x < 0)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            isFacingRight = false;
         }
+        else { isFacingRight = true; }
 
-        WallSlide();
-        WallJump();
-        if (!isWallJumping) // Face same way during wall jump
+        curSize = size.Medium;
+        rb.mass = mediumMass;
+        transform.localScale = mediumScale;
+        moveSpeed = mediumMoveSpeed;
+        acceleration = mediumAcceleration;
+        deceleration = mediumDeceleration;
+        jumpHeight = mediumJumpHeight;
+        rb.gravityScale = mediumGravity;
+
+        controlsActive = true;
+    }
+
+    private void FixedUpdate()
+    {
+        if (controlsActive)
         {
-            CheckForFlip(); // Flip character if movement doesn't match current direction
+            Run();
+            WallSlide();
+            WallJump();
+            if (!isWallJumping)
+            {
+                CheckForFlipSprite();
+            }
+            Friction();
+            HandleJump();
+            FallThroughPlatforms();
         }
 
         if (rb.position.y < -10)
@@ -64,71 +149,37 @@ public class PlayerController : MonoBehaviour
             rb.position = respawnCoords;
             rb.velocity = Vector2.zero;
         }
-        if (rb.velocity.magnitude > maxSpeed)
-        {
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
-        }
-    }
 
-    private void FixedUpdate()
-    {
-        if (!isWallJumping && !lockMovement)
-        {
-            rb.AddForce(new Vector2(movement.x * speed, 0));
-        }
-        if (movement.x == 0)
+
+        if (rb.velocity.x < 1 && rb.velocity.x > -1)
         {
             animator.SetBool("onMove", false);
-        }
-    }
-
-    IEnumerator ScaleAnimation(float time, float scale)
-    {
-        Invoke(nameof(UnlockScaling), time);
-        float i = 0;
-        float rate = 1 / time;
-        Vector2 fromScale = transform.localScale;
-        Vector2 toScale = transform.localScale * scale;
-
-        float startingMass = rb.mass;
-        float startingGravityScale = rb.gravityScale;
-        while (i < 1)
+        } else
         {
-            i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
-            Vector2 p = rb.mass * rb.velocity; // What does this do? -Zach
-            
-            Vector2 newScale = Vector2.Lerp(fromScale, toScale, i); // Lerp does a linear scale from the start to end
-            if (!isFacingRight)
-            {
-                newScale.x *= -1; // Face left
-            }
-            transform.localScale = newScale;
-            rb.mass = Mathf.Lerp(startingMass, startingMass * scale, i);
-            rb.velocity = p / rb.mass; // What does this do? -Zach
+            animator.SetBool("onMove", true);
 
-            rb.gravityScale = Mathf.Lerp(startingGravityScale, startingGravityScale * scale, i); // Scale gravity
-            yield return 0;
         }
-    }
-    
-    private void UnlockScaling()
-    {
-        canScale = true;
+
+        #region timers
+        lastGroundedTime -= Time.deltaTime;
+        lastJumpTime -= Time.deltaTime;
+        #endregion
     }
 
-    // Input handling
-    private void OnMove(InputValue MovementValue)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        Vector2 movementVector = MovementValue.Get<Vector2>().normalized;
-        movement = new Vector2(movementVector.x, 0);
-        animator.SetBool("onMove", true);
+        moveVal = context.ReadValue<Vector2>(); // Gets the only Vector2 from the Input System
     }
 
-    private void OnJump()
-    {      
-        if (IsGrounded())
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed) // Jump button pressed
         {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Sqrt(jumpHeight) * Mathf.Sqrt(rb.gravityScale)); // Makes all sizes jump to same height
+            lastJumpTime = jumpBufferTime; // Start buffering a jump
+        }
+        if (context.canceled) // Jump button released
+        {
+            jumpInputReleased = true;
         }
 
         if (wallJumpTimer > 0f)
@@ -139,38 +190,123 @@ public class PlayerController : MonoBehaviour
 
             if (transform.localScale.x != wallJumpDirection)
             {
-                Flip();
+                FlipSprite();
             }
 
             Invoke(nameof(StopWallJumping), 0.4f);
         }
     }
 
-    private void OnChangeBigger()
+    private void HandleJump()
     {
-        if (currScale != 1 && canScale)
+        //resets grounded timer if on ground
+        if (IsGrounded())
         {
-            canScale = false;
-            StartCoroutine(ScaleAnimation(1, 2f));
-            speed *= 1.5f;
-            currScale++;
+            lastGroundedTime = jumpCoyoteTime;
+        }
+
+        //jumps if jump button pressed within jumpBufferTime seconds and if grounded within jumpCoyoteTime seconds
+        if (lastGroundedTime > 0 && lastJumpTime > 0 && !isJumping)
+        {
+            Jump(jumpHeight);
+        }
+
+        //check if jump is complete
+        if (isJumping && rb.velocity.y <= 0)
+        {
+            isJumping = false;
+            jumpInputReleased = false;
+        }
+
+        //cut jump early
+        if (rb.velocity.y > 0 && isJumping && jumpInputReleased)
+        {
+            rb.AddForce(Vector2.down * rb.velocity.y * jumpCutMultiplier, ForceMode2D.Impulse);
         }
     }
 
-    private void OnChangeSmaller()
+    void Jump(float height)
     {
-        if (currScale != -1 && canScale)
+        float jumpForce = Mathf.Sqrt(height) * Mathf.Sqrt(rb.gravityScale) * rb.mass; // Makes all sizes jump to same height
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        lastGroundedTime = 0f;
+        lastJumpTime = 0f;
+        isJumping = true;
+        jumpInputReleased = false;
+    }
+
+    void Run()
+    {
+        float targetSpeed = moveVal.x * moveSpeed;
+        float speedDif = targetSpeed - rb.velocity.x;
+
+        float accelRate = acceleration;
+        if (Mathf.Sign(targetSpeed) != Mathf.Sign(rb.velocity.x) || Mathf.Abs(targetSpeed) < 0.01f)
         {
-            canScale = false;
-            StartCoroutine(ScaleAnimation(1, 0.5f));
-            currScale--;
-            speed /= 1.5f;
+            accelRate = deceleration;
         }
+
+        if (onIce)
+        {
+            accelRate *= iceSlipperiness;
+        }
+        float movement = speedDif * accelRate;
+
+        rb.AddForce(movement * Vector2.right);
+    }
+
+    void CheckForFlipSprite()
+    {
+        if (isFacingRight && moveVal.x < 0f)
+        {
+            FlipSprite();
+        }
+        else if (!isFacingRight && moveVal.x > 0f)
+        {
+            FlipSprite();
+        }
+    }
+
+    void FlipSprite()
+    {
+        isFacingRight = !isFacingRight;
+        transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+    }
+
+    void Friction()
+    {
+        if (IsGrounded() && Mathf.Abs(rb.velocity.x) > moveSpeed)
+        {
+            float frictionForce = frictionAmount * (Mathf.Abs(rb.velocity.x) - moveSpeed) * -Mathf.Sign(rb.velocity.x);
+            rb.AddForce(Vector2.right * frictionForce);
+        }
+    }
+
+    public void SetAccelRate(float a)
+    {
+        acceleration = a;
+    }
+
+    public void SetDecelRate(float d)
+    {
+        deceleration = d;
+    }
+
+    public float GetAccelRate()
+    {
+        return acceleration;
+    }
+
+    public float GetDecelRate()
+    {
+        return deceleration;
     }
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
+        bool grounded = Physics2D.OverlapCircle(groundCheck.position, overLapRadius, groundLayer);
+        return grounded;
     }
 
     private bool IsWalled()
@@ -180,8 +316,9 @@ public class PlayerController : MonoBehaviour
 
     private void WallSlide()
     {
-        if (IsWalled() && !IsGrounded() && movement.x != 0f)
+        if (IsWalled() && !IsGrounded() && moveVal.x != 0f)
         {
+            Debug.Log("Wall Jumping");
             isWallSliding = true;
             rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
         }
@@ -211,59 +348,254 @@ public class PlayerController : MonoBehaviour
         isWallJumping = false;
     }
 
-    private void CheckForFlip()
+    private void FallThroughPlatforms()
     {
-        if (movement.x < 0 && transform.localScale.x > 0 || movement.x > 0 && transform.localScale.x < 0)
+        if ((moveVal.y < -0.5f && currentOneWayPlatform != null) || fallThroughPlatforms)
         {
-            Flip();
+            fallThroughPlatformsCoroutine = StartCoroutine(FallThroughPlatformsCoroutine());
+        }
+        else
+        {
+            fallThroughPlatformsCoroutine = null;
         }
     }
 
-    private void Flip()
+    IEnumerator FallThroughPlatformsCoroutine()
+
     {
-        isFacingRight = !isFacingRight;
-        Vector3 localScale = transform.localScale;
-        localScale.x *= -1f;
-        transform.localScale = localScale;
+        if (currentOneWayPlatform != null)
+        {
+            BoxCollider2D currentPlatformCollider = currentOneWayPlatform.GetComponent<BoxCollider2D>();
+            Physics2D.IgnoreCollision(GetComponent<CapsuleCollider2D>(), currentPlatformCollider, true);
+            yield return new WaitForSecondsRealtime(0.25f);
+            Physics2D.IgnoreCollision(GetComponent<CapsuleCollider2D>(), currentPlatformCollider, false);
+        }
+        else
+        {
+            yield return null;
+        }
     }
 
-    private void OnTriggerEnter2D (Collider2D other)
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Platform")
+        {
+            currentOneWayPlatform = other.gameObject;
+        }
+
+        if (other.gameObject.tag == "Ice")
+        {
+            onIce = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Platform")
+        {
+            currentOneWayPlatform = null;
+        }
+
+        if (other.gameObject.tag == "Ice")
+        {
+            onIce = false;
+        }
+    }
+
+    public void SetControlsActive(bool flag)
+    {
+        controlsActive = flag;
+    }
+
+    public void SetFallThroughPlatforms(bool flag)
+    {
+        fallThroughPlatforms = flag;
+        if (!flag && fallThroughPlatformsCoroutine != null)
+        {
+            StopCoroutine(fallThroughPlatformsCoroutine);
+        }
+    }
+
+    public Vector2 GetMoveVal()
+    {
+        return moveVal;
+    }
+
+    // Sizeshifting Functions
+
+    public void OnChangeBigger(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (curSize != size.Big && canScale)
+            {
+                ChangeBigger();
+            }
+        }
+    }
+
+    public void OnChangeSmaller(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (curSize != size.Small && canScale)
+            {
+                ChangeSmaller();
+            }
+        }
+    }
+
+    private void ChangeBigger()
+    {
+        canScale = false;
+
+        size endSize;
+        if (curSize == size.Small)
+        {
+            endSize = size.Medium;
+        }
+        else if (curSize == size.Medium)
+        {
+            endSize = size.Big;
+        }
+        else
+        { // curSize shouldn't ever be Big
+            Debug.Log("ERROR: called ChangeBigger when big.");
+            endSize = size.Big;
+        }
+
+        StartCoroutine(ScaleAnimation(curSize, endSize));
+        curSize = endSize; // May need to change later
+        // Possibly increase speed somehow
+    }
+
+    private void ChangeSmaller()
+    {
+        canScale = false;
+
+        size endSize;
+        if (curSize == size.Big)
+        {
+            endSize = size.Medium;
+        }
+        else if (curSize == size.Medium)
+        {
+            endSize = size.Small;
+        }
+        else
+        { // curSize shouldn't ever be Small
+            Debug.Log("ERROR: called ChangeSmaller when small.");
+            endSize = size.Small;
+        }
+
+        StartCoroutine(ScaleAnimation(curSize, endSize));
+        curSize = endSize; // May need to change later
+        // Possibly increase speed somehow
+    }
+
+    IEnumerator ScaleAnimation(size startSize, size endSize)
+    {
+        Invoke(nameof(UnlockScaling), transformationTime);
+        float i = 0;
+        float rate = 1 / transformationTime;
+
+        // Feel free to clean this section up if there's a better way to store these values
+        float startMass = rb.mass;
+        Vector2 startScale = transform.localScale;
+        startScale.x = Mathf.Abs(startScale.x);
+
+        float startMovespeed = moveSpeed;
+        float startAcceleration = acceleration;
+        float startDeceleration = deceleration;
+        float startJumpHeight = jumpHeight;
+        float startGravity = rb.gravityScale;
+
+        float endMass = 0;
+        Vector2 endScale = Vector2.zero;
+        float endMovespeed = 0;
+        float endAcceleration = 0;
+        float endDeceleration = 0;
+        float endJumpHeight = 0;
+        float endGravity = 0;
+
+        if (endSize == size.Small)
+        {
+            endMass = smallMass;
+            endScale = smallScale;
+            endMovespeed = smallMoveSpeed;
+            endAcceleration = smallAcceleration;
+            endDeceleration = smallDeceleration;
+            endJumpHeight = smallJumpHeight;
+            endGravity = smallGravity;
+        }
+
+        if (endSize == size.Medium)
+        {
+            endMass = mediumMass;
+            endScale = mediumScale;
+            endMovespeed = mediumMoveSpeed;
+            endAcceleration = mediumAcceleration;
+            endDeceleration = mediumDeceleration;
+            endJumpHeight = mediumJumpHeight;
+            endGravity = mediumGravity;
+        }
+
+        if (endSize == size.Big)
+        {
+            endMass = bigMass;
+            endScale = bigScale;
+            endMovespeed = bigMoveSpeed;
+            endAcceleration = bigAcceleration;
+            endDeceleration = bigDeceleration;
+            endJumpHeight = bigJumpHeight;
+            endGravity = bigGravity;
+        }
+
+        float startVelocity = rb.velocity.x;
+        float endVelocity = startVelocity * (1 + sizeShiftBoostFactor);
+
+        while (i < 1)
+        {
+            i += Time.deltaTime * rate; // i is on a scale from 0 to 1, with 0 being the start of the animation and 1 being the end
+
+            rb.mass = Mathf.Lerp(startMass, endMass, i); // Lerp does a linear scale from the start to end
+            moveSpeed = Mathf.Lerp(startMovespeed, endMovespeed, i);
+            acceleration = Mathf.Lerp(startAcceleration, endAcceleration, i);
+            deceleration = Mathf.Lerp(startDeceleration, endDeceleration, i);
+            jumpHeight = Mathf.Lerp(startJumpHeight, endJumpHeight, i);
+            rb.gravityScale = Mathf.Lerp(startGravity, endGravity, i);
+
+            Vector2 newScale = Vector2.Lerp(startScale, endScale, i);
+
+            newScale.x = Mathf.Abs(newScale.x) * (isFacingRight ? 1 : -1);
+
+            transform.localScale = newScale;
+
+            // Give speed boost if shrinking
+            if (startScale.y > endScale.y)
+            {
+                rb.velocity = new Vector2(Mathf.Lerp(startVelocity, endVelocity, i), rb.velocity.y);
+            }
+
+            yield return 0;
+        }
+    }
+
+    private void UnlockScaling()
+    {
+        canScale = true;
+    }
+
+    public size GetSize()
+    {
+        return curSize;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Goal"))
         {
             SceneManager.LoadScene("Level1");
         }
-    }
-
-
-
-    public Vector2 GetPosition()
-    {
-        return rb.position;
-    }
-
-    public Vector2 GetVelocity()
-    {
-        return rb.velocity;
-    }
-
-    public int GetSize()
-    {
-        return currScale;
-    }
-
-    public float GetMass()
-    {
-        return rb.mass;
-    }
-
-    public void ApplyForce(Vector2 force)
-    {
-        rb.AddForce(force);
-    }
-
-    public void SetVelocity(Vector2 velocity)
-    {
-        rb.velocity = velocity;
     }
 }

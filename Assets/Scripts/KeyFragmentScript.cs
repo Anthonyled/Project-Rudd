@@ -12,6 +12,7 @@ public class KeyFragmentScript : MonoBehaviour
         {
             gameObject.SetActive(false);
             keyFragmentObtained?.Invoke();
+            Debug.Log("Run");
         }
     }
 }
