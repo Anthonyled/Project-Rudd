@@ -47,9 +47,9 @@ public class GhostEnemy : MonoBehaviour
         }
     }
 
-    // private void OnTriggerEnter2D(Collider2D collider) {
-    //     if (collider.gameObject.CompareTag("Player")) {
-    //         interaction.die();
-    //     }
-    // }
+    private void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.gameObject.CompareTag("Player")) {
+            interaction.takeDamage();
+        }
+    }
 }

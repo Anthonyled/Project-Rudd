@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
+    int MAXHEALTH = 3;
     int health;
     // Start is called before the first frame update
     void Start()
     {
-        health = 3;
+        health = MAXHEALTH;
     }
 
     // Update is called once per frame
@@ -21,8 +22,18 @@ public class Health : MonoBehaviour
     public void takeDamage()
     {
         health--;
+        Debug.Log("took damage");
         if (health == 0) {
+            Debug.Log("player died");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return MAXHEALTH;
     }
 }

@@ -11,6 +11,7 @@ public class PlayerEnemyInteraction : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        h = GetComponent<Health>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
