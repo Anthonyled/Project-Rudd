@@ -4,32 +4,45 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    /*
-    public GameObject bullet;
-    public Transform bulletPos;
-    private float timer;
-    */
     [SerializeField] GameObject player;
-    private PlayerEnemyInteraction interaction;
+    int speed = 0;
+    [SerializeField] int damage;
+    [SerializeField] private LayerMask groundLayer;
+
     private Rigidbody2D rb;
+    private Vector2 initialPosition;
+
     // Start is called before the first frame update
     void Start()
     {
-        interaction = player.GetComponent<PlayerEnemyInteraction>();
         rb = GetComponent<Rigidbody2D>();
+        Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (Vector2)((offset - transform.position));
+        direction.Normalize();
+        rb.velocity = direction * speed;
+        initialPosition = rb.position;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        timer += Time.deltaTime;
-        if (timer > 2) {
-            timer = 0;
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("Enemy"))
+        {
+            Enemy enemy = collision.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+                Destroy(gameObject);
+            }
         }
-        */
     }
 
+    private void Update()
+    {
+        if (Physics2D.OverlapCircle(transform.position, 0.2f, groundLayer))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+<<<<<<< Updated upstream
     private void OnTriggerEnter2D(Collider2D collider) {
         if (collider.gameObject.CompareTag("Player")) {
             interaction.die();
@@ -37,5 +50,10 @@ public class Projectile : MonoBehaviour
         if (collider.gameObject.CompareTag("Ground")) {
             rb.position = new Vector3(10000,10000,0);
         }
+=======
+    public void SetSpeed(int s)
+    {
+        speed = s;
+>>>>>>> Stashed changes
     }
 }
