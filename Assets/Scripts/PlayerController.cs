@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -588,8 +589,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.time - fireCooldownStart > 1 && ammo > 0)
         {
-            Projectile p = (Projectile)Instantiate(projectile, transform.position, transform.rotation);
+            Projectile p = (Projectile) Instantiate(projectile, transform.position, transform.rotation);
             p.SetSpeed(10);
+
+            Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (Vector2) (offset - transform.position);
+            p.SetDirection(direction.normalized);
+
             fireCooldownStart = Time.time;
             ammo--;
         }

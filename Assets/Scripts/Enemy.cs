@@ -5,12 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 
-    private float health;
-
-    public Enemy(int health)
-    {
-        this.health = health;
-    }
+    [SerializeField] private float health;
 
     private void FixedUpdate()
     {

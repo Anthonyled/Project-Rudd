@@ -5,9 +5,11 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] GameObject player;
-    int speed = 0;
-    [SerializeField] int damage;
     [SerializeField] private LayerMask groundLayer;
+
+    int speed = 0;
+    int damage = 1;
+    Vector2 direction;
 
     private Rigidbody2D rb;
     private Vector2 initialPosition;
@@ -16,9 +18,6 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = (Vector2)((offset - transform.position));
-        direction.Normalize();
         rb.velocity = direction * speed;
         initialPosition = rb.position;
     }
@@ -44,5 +43,10 @@ public class Projectile : MonoBehaviour
     public void SetSpeed(int s)
     {
         speed = s;
+    }
+
+    public void SetDirection(Vector2 d)
+    {
+        direction = d;
     }
 }
