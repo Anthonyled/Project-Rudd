@@ -41,19 +41,8 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-<<<<<<< Updated upstream
-    private void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.gameObject.CompareTag("Player")) {
-            interaction.die();
-        }
-        if (collider.gameObject.CompareTag("Ground")) {
-            rb.position = new Vector3(10000,10000,0);
-        }
-=======
     public void SetSpeed(int s)
     {
         speed = s;
->>>>>>> Stashed changes
     }
 }

@@ -11,8 +11,8 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     private Animator animator;
-
     private Rigidbody2D rb;
+
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform wallCheck;
@@ -102,27 +102,15 @@ public class PlayerController : MonoBehaviour
     private float wallJumpTimer;
     private Vector2 wallJumpingPower = new Vector2(12f, 12f);
 
-<<<<<<< Updated upstream
-    private void Awake()
-=======
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask wallLayer;
-
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
     private int ammo = 10000;
 
-    void Start()
->>>>>>> Stashed changes
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-    }
 
-    private void Start()
-    {
         if (transform.localScale.x < 0)
         {
             isFacingRight = false;
@@ -139,6 +127,8 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = mediumGravity;
 
         controlsActive = true;
+
+        
     }
 
     private void FixedUpdate()
@@ -313,18 +303,6 @@ public class PlayerController : MonoBehaviour
     public float GetDecelRate()
     {
         return deceleration;
-    }
-
-    private void OnFire()
-    {
-        Debug.Log("Fire");
-        if (Time.time - fireCooldownStart > 1 && ammo > 0)
-        {
-            Projectile p = (Projectile) Instantiate(projectile, transform.position, transform.rotation);
-            p.SetSpeed(10);
-            fireCooldownStart = Time.time;
-            ammo--;
-        }
     }
 
     private bool IsGrounded()
@@ -603,6 +581,17 @@ public class PlayerController : MonoBehaviour
             }
 
             yield return 0;
+        }
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (Time.time - fireCooldownStart > 1 && ammo > 0)
+        {
+            Projectile p = (Projectile)Instantiate(projectile, transform.position, transform.rotation);
+            p.SetSpeed(10);
+            fireCooldownStart = Time.time;
+            ammo--;
         }
     }
 
