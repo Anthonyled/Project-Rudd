@@ -611,5 +611,15 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene("Level1");
         }
+        
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Wind"))
+        {
+            Wind w = collision.GetComponent<Wind>();
+            rb.AddForce(w.direction * w.force * Time.deltaTime);
+        }
     }
 }
