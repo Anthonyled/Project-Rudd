@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Goal
   - Wind
+  - Damageable
   layers:
   - Default
   - TransparentFX

@@ -626,6 +626,7 @@ public class PlayerController : MonoBehaviour
         {
             Wind w = collision.GetComponent<Wind>();
             rb.AddForce(w.direction * w.force * Time.deltaTime);
+            rb.velocity = new Vector2(rb.velocity.x, Math.Clamp(rb.velocity.y, -10, 15));
         }
     }
 }

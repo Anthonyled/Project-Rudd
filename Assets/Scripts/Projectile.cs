@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     int speed = 0;
-    int damage = 1;
+    int damage = 10;
     Vector2 direction;
 
     private Rigidbody2D rb;
@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
         initialPosition = rb.position;
     }
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Damageable"))
         {
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)

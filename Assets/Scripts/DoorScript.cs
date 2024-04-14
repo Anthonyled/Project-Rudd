@@ -16,7 +16,6 @@ public class DoorScript : MonoBehaviour
 
     public void Close()
     {
-        Debug.Log("Closing");
         animator.SetTrigger("DoorClose");
     }
 }
