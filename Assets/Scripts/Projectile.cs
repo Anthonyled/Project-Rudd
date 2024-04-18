@@ -30,12 +30,15 @@ public class Projectile : MonoBehaviour
         */
     }
 
-    private void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.gameObject.CompareTag("Player")) {
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Player"))
+        {
             interaction.takeDamage();
         }
-        if (collider.gameObject.CompareTag("Ground")) {
-            rb.position = new Vector3(10000,10000,0);
+        if (collider.gameObject.CompareTag("Ground"))
+        {
+            rb.position = new Vector3(10000, 10000, 0);
         }
     }
 }
