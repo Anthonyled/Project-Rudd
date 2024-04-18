@@ -4,38 +4,49 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    /*
-    public GameObject bullet;
-    public Transform bulletPos;
-    private float timer;
-    */
     [SerializeField] GameObject player;
-    private PlayerEnemyInteraction interaction;
+    [SerializeField] private LayerMask groundLayer;
+
+    int speed = 0;
+    int damage = 10;
+    Vector2 direction;
+
     private Rigidbody2D rb;
+    private Vector2 initialPosition;
+
     // Start is called before the first frame update
     void Start()
     {
-        interaction = player.GetComponent<PlayerEnemyInteraction>();
         rb = GetComponent<Rigidbody2D>();
+        rb.velocity = direction * speed;
+        initialPosition = rb.position;
+    }
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Damageable"))
+        {
+            Enemy enemy = collision.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+                Destroy(gameObject);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        /*
-        timer += Time.deltaTime;
-        if (timer > 2) {
-            timer = 0;
+        if (Physics2D.OverlapCircle(transform.position, 0.2f, groundLayer))
+        {
+            Destroy(gameObject);
         }
-        */
+    }
+    public void SetSpeed(int s)
+    {
+        speed = s;
     }
 
-    private void OnTriggerEnter2D(Collider2D collider) {
-        if (collider.gameObject.CompareTag("Player")) {
-            interaction.takeDamage();
-        }
-        if (collider.gameObject.CompareTag("Ground")) {
-            rb.position = new Vector3(10000,10000,0);
-        }
+    public void SetDirection(Vector2 d)
+    {
+        direction = d;
     }
 }
