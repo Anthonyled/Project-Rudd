@@ -207,10 +207,12 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
         {
             lastGroundedTime = jumpCoyoteTime;
+            if (jumpInputReleased && lastJumpTime <= 0)
+                jumpInputReleased = false;
         }
 
         //jumps if jump button pressed within jumpBufferTime seconds and if grounded within jumpCoyoteTime seconds
-        if (lastGroundedTime > 0 && lastJumpTime > 0 && !isJumping)
+        if (lastGroundedTime > 0 && lastJumpTime > 0 && !isJumping && !jumpInputReleased)
         {
             Jump(jumpHeight);
         }
@@ -223,8 +225,9 @@ public class PlayerController : MonoBehaviour
         }
 
         //cut jump early
-        if (rb.velocity.y > 0 && isJumping && jumpInputReleased)
+        if (isJumping && jumpInputReleased)
         {
+            jumpInputReleased = false;
             rb.AddForce(Vector2.down * rb.velocity.y * jumpCutMultiplier, ForceMode2D.Impulse);
         }
     }
