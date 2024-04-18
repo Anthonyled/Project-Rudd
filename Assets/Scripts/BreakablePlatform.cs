@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class IcePlatform : MonoBehaviour
 {
-    [SerializeField] int timeToBreak;
+    [SerializeField] float timeToBreak;
+    [SerializeField] int timeToRespawn;
+    [SerializeField] PlayerController player;
     bool breakPlatform = false;
     float startTime;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
 
         if (other.CompareTag("Player"))
         {
-            if (!breakPlatform)
+            if (!breakPlatform && player.GetSize() != PlayerController.size.Small)
             {
                 Invoke(nameof(BreakPlatform), timeToBreak);
                 breakPlatform = true;
@@ -25,6 +27,13 @@ public class IcePlatform : MonoBehaviour
     private void BreakPlatform()
     {
         gameObject.SetActive(false);
+        Invoke(nameof(RespawnPlatform), timeToRespawn);
+    }
+
+    private void RespawnPlatform()
+    {
+        gameObject.SetActive(true);
+        breakPlatform = false;
     }
 
 }
