@@ -214,6 +214,7 @@ MonoBehaviour:
   maxSpeed: 50
   jumpHeight: 70
   isFacingRight: 1
+  respawnCoords: {x: 0, y: 0}
   groundCheck: {fileID: 3205569173508585690}
   groundLayer:
     serializedVersion: 2
@@ -247,7 +248,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &3246330135912503477
 BoxCollider2D:
