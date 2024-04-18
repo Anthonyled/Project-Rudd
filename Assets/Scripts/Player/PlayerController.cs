@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     [Header("Sizeshifting")]
 
     [Range(0, 1f)][SerializeField] float sizeShiftBoostFactor;
+    private int inAirShrinkBoostsAvailable; // Number of times shrinking mid air will give a speed boost
 
     [Header("Small")]
     [SerializeField] float smallMass;
@@ -127,6 +128,8 @@ public class PlayerController : MonoBehaviour
         jumpHeight = mediumJumpHeight;
         rb.gravityScale = mediumGravity;
 
+        inAirShrinkBoostsAvailable = 2;
+
         controlsActive = true;
 
         
@@ -134,6 +137,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log(inAirShrinkBoostsAvailable);
         if (controlsActive)
         {
             Run();
@@ -206,6 +210,7 @@ public class PlayerController : MonoBehaviour
         //resets grounded timer if on ground
         if (IsGrounded())
         {
+            inAirShrinkBoostsAvailable = 2;
             lastGroundedTime = jumpCoyoteTime;
             if (jumpInputReleased && lastJumpTime <= 0)
                 jumpInputReleased = false;
@@ -217,7 +222,7 @@ public class PlayerController : MonoBehaviour
             Jump(jumpHeight);
         }
 
-        //check if jump is complete
+        // check if jump is complete
         if (isJumping && rb.velocity.y <= 0)
         {
             isJumping = false;
@@ -559,7 +564,13 @@ public class PlayerController : MonoBehaviour
         }
 
         float startVelocity = rb.velocity.x;
-        float endVelocity = startVelocity * (1 + sizeShiftBoostFactor);
+
+        float endVelocity = startVelocity;
+        // Give speed boost if shrinking
+        if (startScale.y > endScale.y && inAirShrinkBoostsAvailable > 0) {
+            endVelocity = startVelocity * (1 + sizeShiftBoostFactor);
+            inAirShrinkBoostsAvailable--;
+        }
 
         while (i < 1)
         {
@@ -579,10 +590,7 @@ public class PlayerController : MonoBehaviour
             transform.localScale = newScale;
 
             // Give speed boost if shrinking
-            if (startScale.y > endScale.y)
-            {
-                rb.velocity = new Vector2(Mathf.Lerp(startVelocity, endVelocity, i), rb.velocity.y);
-            }
+            rb.velocity = new Vector2(Mathf.Lerp(startVelocity, endVelocity, i), rb.velocity.y);
 
             yield return 0;
         }
