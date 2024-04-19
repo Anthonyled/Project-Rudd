@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(inAirShrinkBoostsAvailable);
+        //Debug.Log(inAirShrinkBoostsAvailable);
         if (controlsActive)
         {
             Run();
