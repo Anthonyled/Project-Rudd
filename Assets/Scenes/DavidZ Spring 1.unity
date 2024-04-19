@@ -15057,11 +15057,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1097550876012640029, guid: 2b191d1a937b8c44fa50fcbfc80097ff, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1097550876012640029, guid: 2b191d1a937b8c44fa50fcbfc80097ff, type: 3}
       propertyPath: m_SortingLayerID
-      value: 508503591
+      value: 1614182467
       objectReference: {fileID: 0}
     - target: {fileID: 3350529787456224731, guid: 2b191d1a937b8c44fa50fcbfc80097ff, type: 3}
       propertyPath: m_ApplyRootMotion
