@@ -214,6 +214,7 @@ MonoBehaviour:
   maxSpeed: 50
   jumpHeight: 70
   isFacingRight: 1
+  respawnCoords: {x: 0, y: 0}
   groundCheck: {fileID: 3205569173508585690}
   groundLayer:
     serializedVersion: 2

@@ -22,7 +22,6 @@ public class Health : MonoBehaviour
     public void takeDamage()
     {
         health--;
-        Debug.Log("took damage");
         if (health == 0) {
             Debug.Log("player died");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
