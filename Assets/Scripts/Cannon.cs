@@ -8,11 +8,13 @@ public class Cannon : MonoBehaviour
     [SerializeField] GameObject indicator;
     [SerializeField] float power;
     [SerializeField] float indicatorDist;
+    [SerializeField] Renderer playerRenderer;
+    private PlayerController playerController;
     private Rigidbody2D rb;
     private Rigidbody2D cannonRb;
     private float angle;
     private Rigidbody2D indicatorPos;
-    bool insideCannon;
+    private bool insideCannon;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,7 @@ public class Cannon : MonoBehaviour
         cannonRb = GetComponent<Rigidbody2D>();
         indicatorPos = indicator.GetComponent<Rigidbody2D>();
         insideCannon = false;
+        playerController = player.GetComponent<PlayerController>();
         angle = 0;
     }
 
@@ -27,19 +30,19 @@ public class Cannon : MonoBehaviour
     void Update()
     {
         indicatorPos.position = cannonRb.position + new Vector2(indicatorDist * Mathf.Cos(angle), indicatorDist * Mathf.Sin(angle));
-        if (Input.GetKeyDown(KeyCode.E) && insideCannon)
+        if (Input.GetKeyDown(KeyCode.Space) && insideCannon)
         {
             print("what's updog");
             rb.velocity = new Vector2(power * Mathf.Cos(angle), power * Mathf.Sin(angle));
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && insideCannon)
+        if (Input.GetKeyDown(KeyCode.W) && insideCannon)
         {
-            print("love u");
+            print("hi hello :3");
             angle += (float)0.1;
         }
 
-        if (Input.GetKeyDown(KeyCode.G) && insideCannon)
+        if (Input.GetKeyDown(KeyCode.S) && insideCannon)
         {
             print("hi pookie :3");
             angle -= (float)0.1;
@@ -52,6 +55,8 @@ public class Cannon : MonoBehaviour
         {
             print("i like rats");
             insideCannon = true;
+            playerRenderer.enabled = false;
+            playerController.lockMovement();
         }
     }
 
@@ -61,6 +66,8 @@ public class Cannon : MonoBehaviour
         {
             print("you're so cool and awesome and also super smart");
             insideCannon = false;
+            playerRenderer.enabled = true;
+            playerController.unlockMovement();
         }
     }
 }
