@@ -521,6 +521,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98d163cefaf0e402c82c554447f324dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!212 &1031543209 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 9093649235814985746, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+  m_PrefabInstance: {fileID: 281093531}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1141129911
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -794,6 +799,7 @@ MonoBehaviour:
   indicator: {fileID: 2077223966}
   power: 50
   indicatorDist: 1
+  playerRenderer: {fileID: 1031543209}
 --- !u!1001 &1677895725
 PrefabInstance:
   m_ObjectHideFlags: 0
