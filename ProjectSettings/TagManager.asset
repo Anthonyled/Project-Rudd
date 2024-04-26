@@ -9,6 +9,8 @@ TagManager:
   - Goal
   - Wind
   - Damageable
+  - Ice
+  - Moving Platform
   layers:
   - Default
   - TransparentFX

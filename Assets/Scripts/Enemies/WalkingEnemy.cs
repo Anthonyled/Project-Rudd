@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float speed;
+    [SerializeField] float speed;
     public GameObject pointA;
     public GameObject pointB;
 
@@ -33,6 +33,11 @@ public class EnemyScript : MonoBehaviour
         if (Vector2.Distance(transform.position, currentPoint.position) < 1f && currentPoint == pointA.transform) {
             currentPoint = pointB.transform;
         }
+    }
+
+    public float getVelocity()
+    {
+        return rb.velocity.x;
     }
 
 }
