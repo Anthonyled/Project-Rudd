@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Wind.cs.meta
-guid: 08ab16d49842249bca8f05f5aba58698
-========
-guid: a2ff9d1b2b4f94367ab0f17109698199
->>>>>>>> lindsay-dev:Assets/Scripts/MeleeAttack.cs.meta
+guid: 29146249340bf4430a7c1b6d0d7f20e3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
