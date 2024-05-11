@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private float deceleration = 10f;
     [SerializeField] private float frictionAmount;
     private float jumpHeight = 70f;
+    private float wallJumpHeight = 50f;
 
     [Header("Jump")]
     [Range(0, 1f)][SerializeField] float jumpCutMultiplier = 0.5f;
@@ -102,7 +103,6 @@ public class PlayerController : MonoBehaviour
     private float wallJumpDirection;
     private float wallJumpTime = 0.2f;
     private float wallJumpTimer;
-    private Vector2 wallJumpingPower = new Vector2(12f, 12f);
 
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
@@ -137,7 +137,6 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(inAirShrinkBoostsAvailable);
         if (controlsActive)
         {
             Run();
@@ -190,10 +189,12 @@ public class PlayerController : MonoBehaviour
             jumpInputReleased = true;
         }
 
-        if (wallJumpTimer > 0f)
+        if (wallJumpTimer > 0f && !jumpInputReleased)
         {
-            isWallJumping = true;
-            rb.velocity = new Vector2(wallJumpDirection * wallJumpingPower.x, wallJumpingPower.y);
+            isWallJumping = true; 
+            float jumpForce = Mathf.Sqrt(wallJumpHeight) * Mathf.Sqrt(rb.gravityScale) * rb.mass; // Makes all sizes jump to same height
+            rb.AddForce(new Vector2 (wallJumpDirection * 5f, jumpForce), ForceMode2D.Impulse);
+
             wallJumpTimer = 0f;
 
             if (transform.localScale.x != wallJumpDirection)
