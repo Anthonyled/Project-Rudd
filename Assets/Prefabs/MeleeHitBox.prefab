@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7948538242757217209}
   - component: {fileID: 860241021593988310}
   - component: {fileID: 6379568973237631877}
-  - component: {fileID: 5697553388447953206}
+  - component: {fileID: 6737706530753637267}
   m_Layer: 0
   m_Name: MeleeHitBox
   m_TagString: Untagged
@@ -131,7 +131,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5697553388447953206
+--- !u!114 &6737706530753637267
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 897782526049098621}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2ff9d1b2b4f94367ab0f17109698199, type: 3}
+  m_Script: {fileID: 11500000, guid: 4987ef5de5fa24a9ea203df7041a5060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
