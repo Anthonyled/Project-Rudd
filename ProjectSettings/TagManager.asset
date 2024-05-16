@@ -9,6 +9,8 @@ TagManager:
   - Goal
   - Wind
   - Damageable
+  - Ice
+  - Kill
   layers:
   - Default
   - TransparentFX
