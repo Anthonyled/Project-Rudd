@@ -107,6 +107,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
     private int ammo = 10000;
+    private PlayerEnemyInteraction playerEnemyInteraction;
 
     private void Start()
     {
@@ -132,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
         controlsActive = true;
 
-        
+        playerEnemyInteraction = GetComponent<PlayerEnemyInteraction>();
     }
 
     private void FixedUpdate()
@@ -399,6 +400,11 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.tag == "Ice")
         {
             onIce = true;
+        }
+
+        if (other.gameObject.tag == "Kill")
+        {
+            playerEnemyInteraction.die();
         }
     }
 
