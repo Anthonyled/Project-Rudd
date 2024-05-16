@@ -8,12 +8,14 @@ public class HorizontalMovingPlatform : MonoBehaviour
     public float speed;
     [SerializeField] GameObject pointA;
     [SerializeField] GameObject pointB;
+    PlayerController playerController;
 
     private Rigidbody2D rb;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = new Vector2(speed, 0);
+        playerController = FindObjectOfType<PlayerController>();
     }
 
     // Update is called once per frame
@@ -22,10 +24,12 @@ public class HorizontalMovingPlatform : MonoBehaviour
         if (transform.position.x < pointA.transform.position.x)
         {
             rb.velocity = new Vector2(speed, 0);
+            playerController.SetXVelocity(speed);
         }
         if (transform.position.x > pointB.transform.position.x)
         {
             rb.velocity = new Vector2(-speed, 0);
+            playerController.SetXVelocity(-speed);
         }
     }
 

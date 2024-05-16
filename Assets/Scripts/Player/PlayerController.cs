@@ -324,6 +324,11 @@ public class PlayerController : MonoBehaviour
         return deceleration;
     }
 
+    public void SetXVelocity(float v)
+    {
+        rb.velocity = new Vector2(v, rb.velocity.y);
+    }
+
     private bool IsGrounded()
     {
         float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
