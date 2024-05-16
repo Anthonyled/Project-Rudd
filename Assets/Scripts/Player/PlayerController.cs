@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine fallThroughPlatformsCoroutine;
 
     private GameObject currentOneWayPlatform;
+    private GameObject currentMovingPlatform;
 
     private bool onIce;
     [Range(0, 1f)][SerializeField] float iceSlipperiness;
@@ -250,6 +251,9 @@ public class PlayerController : MonoBehaviour
     void Run()
     {
         float targetSpeed = moveVal.x * moveSpeed;
+        if (currentMovingPlatform != null)
+            targetSpeed += currentMovingPlatform.GetComponent<WalkingEnemy>().getVelocity();
+
         float speedDif = targetSpeed - rb.velocity.x;
 
         float accelRate = acceleration;
@@ -628,6 +632,11 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene("Level1");
         }
+
+        else if (other.CompareTag("Moving Platform"))
+        {
+            currentMovingPlatform = other.gameObject;
+        }
         
     }
 
@@ -639,5 +648,10 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(w.direction * w.force * Time.deltaTime);
             rb.velocity = new Vector2(rb.velocity.x, Math.Clamp(rb.velocity.y, -10, 15));
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject == currentMovingPlatform)
+            currentMovingPlatform = null;
     }
 }

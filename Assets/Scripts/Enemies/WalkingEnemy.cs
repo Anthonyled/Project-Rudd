@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyScript : MonoBehaviour
+public class WalkingEnemy : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] float speed;
