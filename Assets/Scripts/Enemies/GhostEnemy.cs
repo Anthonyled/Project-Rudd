@@ -11,6 +11,7 @@ public class GhostEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private Transform playerPoint;
     private PlayerEnemyInteraction interaction;
+
     // Start is called before the first frame update
     void Start()
     {

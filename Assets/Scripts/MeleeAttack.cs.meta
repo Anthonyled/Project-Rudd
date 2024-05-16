@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Wind.cs.meta
+guid: 4987ef5de5fa24a9ea203df7041a5060
+========
+guid: a2ff9d1b2b4f94367ab0f17109698199
+>>>>>>>> lindsay-dev:Assets/Scripts/MeleeAttack.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
