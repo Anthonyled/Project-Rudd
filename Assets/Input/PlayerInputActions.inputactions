@@ -127,11 +127,12 @@
                 },
                 {
                     "name": "",
-                    "id": "d8d36812-574c-42ad-aa7f-457c1c7666e1",
-                    "path": "<Gamepad>/dpad",
+
+                    "id": "e3c4516c-94c9-41ef-a464-cae21ca1f702",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "Gamepad;Joystick",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -237,6 +238,17 @@
                 },
                 {
                     "name": "",
+                    "id": "49ec9dda-9e3e-4c96-95be-3abf45a64326",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8e77c621-18f9-4563-93f3-064937fc5d05",
                     "path": "<Keyboard>/w",
                     "interactions": "",
@@ -259,6 +271,17 @@
                 },
                 {
                     "name": "",
+                    "id": "bb7a995b-23fa-4ab6-adf5-470394fa6dd7",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChangeBigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d61311c1-e2db-46cd-966e-113c143d0315",
                     "path": "<Keyboard>/s",
                     "interactions": "",
@@ -275,6 +298,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "ChangeSmaller",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71e587d0-0a5a-461b-92c9-9ad92594db60",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "ChangeSmaller",
                     "isComposite": false,
                     "isPartOfComposite": false
