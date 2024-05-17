@@ -6,18 +6,18 @@ public class MovingPlatform : MonoBehaviour
 {
 
     [SerializeField] List<Vector2> moveCoords;
-
+    [SerializeField] int platformMoveSpeed;
     private int i = 0;
 
 
     private void Start()
     {
-        InvokeRepeating(nameof(Move), 3f, 3f);
+        InvokeRepeating(nameof(Move), platformMoveSpeed, platformMoveSpeed);
     }
 
     private void Move()
     {
-        StartCoroutine(MoveToPosition(moveCoords[i % moveCoords.Count], 3f));
+        StartCoroutine(MoveToPosition(moveCoords[i % moveCoords.Count], platformMoveSpeed));
         i++;
     }
 
