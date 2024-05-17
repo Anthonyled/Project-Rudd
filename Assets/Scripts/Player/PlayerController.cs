@@ -324,7 +324,7 @@ public class PlayerController : MonoBehaviour
         return deceleration;
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
         bool grounded = Physics2D.OverlapCircle(groundCheck.position, overLapRadius, groundLayer);
@@ -654,7 +654,6 @@ public class PlayerController : MonoBehaviour
     {
         moveSpeed = oldMoveSpeed;
         acceleration = oldAcceleration;
-        deceleration = oldDeceleration;
         jumpHeight = oldJumpHeight;
         canScale = true;
         print(moveSpeed + " " + acceleration + " " + deceleration + " " + jumpHeight);
