@@ -11,6 +11,7 @@ public class EnemyScript : MonoBehaviour
 
     private Rigidbody2D rb;
     private Transform currentPoint;
+    private bool isFacingRight = false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,6 +33,17 @@ public class EnemyScript : MonoBehaviour
         }
         if (Vector2.Distance(transform.position, currentPoint.position) < 1f && currentPoint == pointA.transform) {
             currentPoint = pointB.transform;
+        }
+
+        if (speed > 0 && !isFacingRight)
+        {
+            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+            isFacingRight = true;
+        } 
+        else if (speed < 0 && isFacingRight) 
+        {
+            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+            isFacingRight = false;
         }
     }
 
