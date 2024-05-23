@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
         initialPosition = rb.position;
     }
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Enemy") || collision.CompareTag("Damageable"))
+        if (collision.CompareTag("Enemy") || collision.CompareTag("Damageable") || collision.CompareTag("Player"))
         {
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)
