@@ -434,11 +434,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7550764864021901005, guid: 0f2b7c8dcb1674375ae7538d5eaaf9e4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 51.7
+      value: 46.2
       objectReference: {fileID: 0}
     - target: {fileID: 7550764864021901005, guid: 0f2b7c8dcb1674375ae7538d5eaaf9e4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15
+      value: 17.7
       objectReference: {fileID: 0}
     - target: {fileID: 7550764864021901005, guid: 0f2b7c8dcb1674375ae7538d5eaaf9e4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1266,6 +1266,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6710647976949292598, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
   m_PrefabInstance: {fileID: 969474240}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &606639549 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4469728957128989884, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+  m_PrefabInstance: {fileID: 969474240}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606639544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64d4181204b06a4da2fd0a3113d5514, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &642725014
 GameObject:
   m_ObjectHideFlags: 0
@@ -5434,9 +5445,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4469728957128989884, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: projectile
+      value: 
+      objectReference: {fileID: 1045026838}
     - target: {fileID: 6710647976949292598, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
       propertyPath: m_Name
       value: Player 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 606639549}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFire
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891276362352811384, guid: 883cf1432c4a0214e8ac1d6776caedcb, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5460,7 +5503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a5ff569c73d477a9cdc14c7706b9b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 606639544}
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
