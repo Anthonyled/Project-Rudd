@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
             FallThroughPlatforms();
         }
 
-        if (rb.position.y < -10)
+        if (rb.position.y < -100)
         {
             rb.position = respawnCoords;
             rb.velocity = Vector2.zero;
