@@ -1,0 +1,34 @@
+{
+    "name": "TempActions",
+    "maps": [
+        {
+            "name": "New action map",
+            "id": "71905035-2448-4139-89ec-d02fd90204c6",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "2f25ba3a-fd51-4e15-a529-e8eae1a6a432",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "56d658b7-ad6d-4171-b797-aea079fbb20b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OverWorldScript : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class OverWorldScript : MonoBehaviour
         internal Node right;
         internal Node up;
         internal Node down;
-
+        internal string levelName;
         public Node(Vector2 d)
         {
             data = d;
@@ -19,6 +20,7 @@ public class OverWorldScript : MonoBehaviour
             right = null;
             up = null;
             down = null;
+            levelName = null;
         }
     }
 
@@ -30,6 +32,7 @@ public class OverWorldScript : MonoBehaviour
         currNode = new Node(new Vector2(0,0));
         currNode.right = new Node(new Vector2(1,0));
         currNode.right.left = currNode;
+        currNode.levelName = "DavidZ Spring 1";
     }
 
     // Update is called once per frame
@@ -79,5 +82,10 @@ public class OverWorldScript : MonoBehaviour
                 currNode = currNode.down;
             }
         }
+    }
+
+    private void OnEnter()
+    {
+        SceneManager.LoadScene(currNode.levelName);
     }
 }
