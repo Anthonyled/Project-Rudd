@@ -35,12 +35,12 @@ public class EnemyScript : MonoBehaviour
             currentPoint = pointB.transform;
         }
 
-        if (speed > 0 && !isFacingRight)
+        if (rb.velocity.x > 0 && !isFacingRight)
         {
             transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
             isFacingRight = true;
         } 
-        else if (speed < 0 && isFacingRight) 
+        else if (rb.velocity.x < 0 && isFacingRight) 
         {
             transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
             isFacingRight = false;

@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour
             jumpInputReleased = true;
         }
 
-        if (wallJumpTimer > 0f && !jumpInputReleased)
+        if (wallJumpTimer > 0f)
         {
             isWallJumping = true; 
             float jumpForce = Mathf.Sqrt(wallJumpHeight) * Mathf.Sqrt(rb.gravityScale) * rb.mass; // Makes all sizes jump to same height
