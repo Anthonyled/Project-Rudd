@@ -1142,6 +1142,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4581018739351504312, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.21
+      objectReference: {fileID: 0}
     - target: {fileID: 5343543264121571485, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy (1)
@@ -1185,6 +1189,10 @@ PrefabInstance:
     - target: {fileID: 7473626242223464388, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175614082506920501, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.24
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6342,6 +6350,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4581018739351504312, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5343543264121571485, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
       propertyPath: m_Name
       value: WalkingEnemy
@@ -6385,6 +6397,10 @@ PrefabInstance:
     - target: {fileID: 7473626242223464388, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175614082506920501, guid: 27ee75621b9a5465d87268418538aa59, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
