@@ -27,10 +27,13 @@ public class MeleeAttack : MonoBehaviour
 
      void ActivateHitbox()
     {
+        Vector3 curSize = p.GetDimensions();
+        transform.localScale = new Vector3(curSize.x * 1.25f, curSize.x * 1.25f, 0);
+
         if (p.isFacingRight) {
-            transform.position = new Vector3(player.transform.position.x + 0.8f, player.transform.position.y, 0);
+            transform.position = new Vector3(player.transform.position.x + curSize.x * 1.5f, player.transform.position.y, 0);
         } else {
-            transform.position = new Vector3(player.transform.position.x - 0.8f, player.transform.position.y, 0);
+            transform.position = new Vector3(player.transform.position.x - curSize.x * 1.5f, player.transform.position.y, 0);
         }
         renderer.enabled = true;
     }

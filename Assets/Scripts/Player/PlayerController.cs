@@ -623,6 +623,10 @@ public class PlayerController : MonoBehaviour
         return curSize;
     }
 
+    public Vector3 GetDimensions() {
+        return GetComponent<Renderer>().bounds.size;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Goal"))
