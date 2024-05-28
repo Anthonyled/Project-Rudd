@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 7995395332490229604}
   - component: {fileID: 4952038094276411466}
   - component: {fileID: 2841970769658034310}
+  - component: {fileID: 3160522506903759231}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Enemy
@@ -170,7 +171,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1436392953
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.20064259, g: 1, b: 0, a: 1}
@@ -270,3 +271,16 @@ MonoBehaviour:
   speed: 3
   pointA: {fileID: 492334860788728178}
   pointB: {fileID: 1584807572940823755}
+--- !u!114 &3160522506903759231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2549198855895770806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdc6b5ceafb52a04da50c4a8b6d4e2b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 30
