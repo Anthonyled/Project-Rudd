@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine fallThroughPlatformsCoroutine;
 
     private GameObject currentOneWayPlatform;
+    private GameObject currentMovingPlatform;
 
     private bool onIce;
     [Range(0, 1f)][SerializeField] float iceSlipperiness;
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
     private int ammo = 10000;
+    private PlayerEnemyInteraction playerEnemyInteraction;
 
     private void Start()
     {
@@ -141,7 +143,8 @@ public class PlayerController : MonoBehaviour
 
         controlsActive = true;
 
-
+        playerEnemyInteraction = GetComponent<PlayerEnemyInteraction>();
+        currentMovingPlatform = null;
     }
 
     private void FixedUpdate()
@@ -259,7 +262,13 @@ public class PlayerController : MonoBehaviour
 
     void Run()
     {
-        float targetSpeed = moveVal.x * moveSpeed;
+        float baseSpeed = 0f;
+        if (currentMovingPlatform != null) {
+            Rigidbody2D platformrb = currentMovingPlatform.GetComponent<Rigidbody2D>();
+            baseSpeed = platformrb.velocity.x;
+        }
+
+        float targetSpeed = baseSpeed + (moveVal.x * moveSpeed);
         float speedDif = targetSpeed - rb.velocity.x;
 
         float accelRate = acceleration;
@@ -322,6 +331,11 @@ public class PlayerController : MonoBehaviour
     public float GetDecelRate()
     {
         return deceleration;
+    }
+
+    public void SetXVelocity(float v)
+    {
+        rb.velocity = new Vector2(v, rb.velocity.y);
     }
 
     public bool IsGrounded()
@@ -408,6 +422,11 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.tag == "Ice")
         {
             onIce = true;
+        }
+
+        if (other.gameObject.tag == "Kill")
+        {
+            playerEnemyInteraction.die();
         }
     }
 
@@ -668,6 +687,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log(LevelManager.levelTracker.Count);
             SceneManager.LoadScene("Overworld");
         }
+
+
+        if (other.CompareTag("HorizontalPlatform"))
+        {
+            currentMovingPlatform = other.gameObject;
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -677,6 +702,14 @@ public class PlayerController : MonoBehaviour
             Wind w = collision.GetComponent<Wind>();
             rb.AddForce(w.direction * w.force * Time.deltaTime);
             rb.velocity = new Vector2(rb.velocity.x, Math.Clamp(rb.velocity.y, -10, 15));
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("HorizontalPlatform"))
+        {
+            currentMovingPlatform = null;
         }
     }
 }
