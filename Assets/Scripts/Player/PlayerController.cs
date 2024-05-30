@@ -664,9 +664,10 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Goal"))
         {
-            SceneManager.LoadScene("Level1");
+            LevelManager.levelTracker.Add(SceneManager.GetActiveScene().name, true);
+            Debug.Log(LevelManager.levelTracker.Count);
+            SceneManager.LoadScene("Overworld");
         }
-
     }
 
     private void OnTriggerStay2D(Collider2D collision)

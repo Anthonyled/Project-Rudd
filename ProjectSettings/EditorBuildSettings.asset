@@ -23,5 +23,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: b1395622c0896c54bb787c386d241ac6
+  - enabled: 1
+    path: Assets/Scenes/DavidZ Spring 1.unity
+    guid: 112beef2d88195b439f5e17959484e35
+  - enabled: 1
+    path: Assets/Scenes/Overworld.unity
+    guid: 9376ddaddc89caa439751f6f39967067
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 0039461e3cfa74dfc8a8dd51ca510fdb, type: 2}

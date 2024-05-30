@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 3246330135912503477}
   - component: {fileID: 3226797391696271929}
   - component: {fileID: 7921902835988061329}
+  - component: {fileID: 8805761772389265822}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Player
@@ -267,7 +268,19 @@ MonoBehaviour:
     m_ActionId: 589c37b4-781e-438b-acd9-0e8857e4619e
     m_ActionName: Player/ChangeSmaller[/Keyboard/s,/Keyboard/downArrow]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8805761772389265822}
+        m_TargetAssemblyTypeName: OverWorldScript, Assembly-CSharp
+        m_MethodName: OnEnterBuilding
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: c06fa3f4-f644-4829-8afe-4a5c382f9632
     m_ActionName: Player/EnterBuilding[/Keyboard/e]
   - m_PersistentCalls:
@@ -472,6 +485,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8805761772389265822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6710647976949292598}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70e608c98c59034f82ce66f5e675562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startNode: {fileID: 0}
 --- !u!1 &6945961529852931148
 GameObject:
   m_ObjectHideFlags: 0
