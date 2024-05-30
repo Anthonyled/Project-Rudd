@@ -8,11 +8,12 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] GameObject player;
     PlayerController p;
     SpriteRenderer renderer;
+    int damage = 5;
     void Start()
     {
         p = player.GetComponent<PlayerController>();
         renderer = GetComponent<SpriteRenderer>();
-        renderer.enabled = false;   
+        renderer.enabled = true;   
     }
 
     // Update is called once per frame
@@ -37,13 +38,17 @@ public class MeleeAttack : MonoBehaviour
 
     void DeactivateHitbox()
     {
-        renderer.enabled = false;
+        //renderer.enabled = false;
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Enemy")) {
+        if (other.CompareTag("Enemy") && renderer.enabled) {
             Debug.Log("enemy collision");
-            other.gameObject.SetActive(false);
+            Damageable enemy = other.GetComponent<Damageable>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
         }
     }
 }
