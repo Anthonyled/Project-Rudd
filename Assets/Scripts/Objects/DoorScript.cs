@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorScript : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
     private void Awake()
     {
         animator = GetComponent<Animator>();
