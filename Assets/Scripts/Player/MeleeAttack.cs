@@ -9,31 +9,45 @@ public class MeleeAttack : MonoBehaviour
     PlayerController p;
     SpriteRenderer renderer;
     int damage = 5;
+    Collider2D enemyCollision;
     void Start()
     {
         p = player.GetComponent<PlayerController>();
         renderer = GetComponent<SpriteRenderer>();
-        renderer.enabled = false;   
+        renderer.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M)) {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
             Debug.Log("Meleeeattack");
             Invoke("ActivateHitbox", 0.1f);
             Invoke("DeactivateHitbox", 0.3f);
         }
     }
 
-     void ActivateHitbox()
+    void ActivateHitbox()
     {
-        if (p.isFacingRight) {
+        if (p.isFacingRight)
+        {
             transform.position = new Vector3(player.transform.position.x + 0.8f, player.transform.position.y, 0);
-        } else {
+        }
+        else
+        {
             transform.position = new Vector3(player.transform.position.x - 0.8f, player.transform.position.y, 0);
         }
         renderer.enabled = true;
+
+        if (enemyCollision != null)
+        {
+            Damageable enemy = enemyCollision.GetComponent<Damageable>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+        }
     }
 
     void DeactivateHitbox()
@@ -41,14 +55,20 @@ public class MeleeAttack : MonoBehaviour
         renderer.enabled = false;
     }
 
-    void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Enemy") || other.CompareTag("Damageable") && renderer.enabled) {
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy") || other.CompareTag("Damageable"))
+        {
+            enemyCollision = other;
             Debug.Log("enemy collision");
-            Damageable enemy = other.GetComponent<Damageable>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Enemy") || other.CompareTag("Damageable"))
+        {
+            enemyCollision = null;
         }
     }
 }
