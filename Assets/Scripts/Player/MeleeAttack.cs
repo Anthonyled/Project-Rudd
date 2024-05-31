@@ -15,8 +15,8 @@ public class MeleeAttack : MonoBehaviour
     {
         p = player.GetComponent<PlayerController>();
         renderer = GetComponent<SpriteRenderer>();
-        renderer.enabled = false;
-        animator = this.transform.parent.GetComponent<Animator>();
+        renderer.enabled = true;
+        animator = player.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -41,7 +41,7 @@ public class MeleeAttack : MonoBehaviour
         {
             transform.position = new Vector3(player.transform.position.x - 0.8f, player.transform.position.y, 0);
         }
-
+        animator.SetTrigger("onAttack");
         if (enemyCollision != null)
         {
             Damageable enemy = enemyCollision.GetComponent<Damageable>();
@@ -50,14 +50,13 @@ public class MeleeAttack : MonoBehaviour
                 enemy.TakeDamage(damage);
             }
         }
-        animator.SetTrigger("onAttack");
     }
 
     void DeactivateHitbox()
     {
     }
 
-    void OnTriggerStay2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy") || other.CompareTag("Damageable"))
         {
