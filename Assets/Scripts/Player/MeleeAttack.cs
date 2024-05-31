@@ -8,6 +8,7 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] GameObject player;
     PlayerController p;
     SpriteRenderer renderer;
+    Animator animator;
     int damage = 5;
     Collider2D enemyCollision;
     void Start()
@@ -15,6 +16,7 @@ public class MeleeAttack : MonoBehaviour
         p = player.GetComponent<PlayerController>();
         renderer = GetComponent<SpriteRenderer>();
         renderer.enabled = false;
+        animator = this.transform.parent.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -30,6 +32,7 @@ public class MeleeAttack : MonoBehaviour
 
     void ActivateHitbox()
     {
+
         if (p.isFacingRight)
         {
             transform.position = new Vector3(player.transform.position.x + 0.8f, player.transform.position.y, 0);
@@ -38,7 +41,6 @@ public class MeleeAttack : MonoBehaviour
         {
             transform.position = new Vector3(player.transform.position.x - 0.8f, player.transform.position.y, 0);
         }
-        renderer.enabled = true;
 
         if (enemyCollision != null)
         {
@@ -48,11 +50,11 @@ public class MeleeAttack : MonoBehaviour
                 enemy.TakeDamage(damage);
             }
         }
+        animator.SetTrigger("onAttack");
     }
 
     void DeactivateHitbox()
     {
-        renderer.enabled = false;
     }
 
     void OnTriggerStay2D(Collider2D other)

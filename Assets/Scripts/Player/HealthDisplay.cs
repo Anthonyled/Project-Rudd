@@ -16,8 +16,7 @@ public class HealthDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + (float)5.5);
-
+        transform.position = player.transform.position + new Vector3(-0.6f, 2.5f, 0);
         for (int i = 0; i < h.getHealth(); i++) {
             heartList[i].SetActive(true);
         }
