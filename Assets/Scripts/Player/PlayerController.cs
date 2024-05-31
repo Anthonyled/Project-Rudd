@@ -632,7 +632,7 @@ public class PlayerController : MonoBehaviour
         if (Time.time - fireCooldownStart > 1 && ammo > 0)
         {
             Projectile p = (Projectile)Instantiate(projectile, transform.position, transform.rotation);
-            p.SetSpeed(10);
+            p.SetSpeed(20);
 
             Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (Vector2)(offset - transform.position);
