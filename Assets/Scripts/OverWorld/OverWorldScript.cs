@@ -1,35 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class OverWorldScript : MonoBehaviour
 {
-    internal class Node
-    {
-        internal Vector2 data;
-        internal Node left;
-        internal Node right;
-        internal Node up;
-        internal Node down;
 
-        public Node(Vector2 d)
-        {
-            data = d;
-            left = null;
-            right = null;
-            up = null;
-            down = null;
-        }
-    }
-
-    Node currNode;
+    [SerializeField] LevelNode startNode;
+    PlayerController pc;
+    LevelNode currNode;
+    Animator animator;
+    bool isFacingRight = true;
+    bool isRunning = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        currNode = new Node(new Vector2(0,0));
-        currNode.right = new Node(new Vector2(1,0));
-        currNode.right.left = currNode;
+        currNode = startNode;
+        transform.position = startNode.pos;
+        animator = GetComponent<Animator>();
+        startNode.locked = false;
     }
 
     // Update is called once per frame
@@ -42,42 +34,89 @@ public class OverWorldScript : MonoBehaviour
         if (xAxis < 0) { moveSelector("left"); }
         if (yAxis > 0) { moveSelector("up"); }
         if (yAxis < 0) { moveSelector("down"); }
+
+        if (LevelManager.levelTracker.ContainsKey(currNode.levelName))
+        {
+            if (currNode.right != null)
+                currNode.right.locked = false;
+            if (currNode.left != null)
+                currNode.left.locked = false;
+            if (currNode.up != null)
+                currNode.up.locked = false;
+            if (currNode.down != null)
+                currNode.down.locked = false;
+        }
     }
 
     void moveSelector(string dir)
     {
         if (dir == "right")
-        {
-            if (currNode.right != null)
+        { 
+            if (currNode.right != null && !currNode.right.locked && !isRunning)
             {
-                transform.position = currNode.right.data;
+                if (!isFacingRight)
+                {
+                    FlipSprite();
+                }
+                StartCoroutine(MoveToPosition(currNode.right.pos, 1));
                 currNode = currNode.right;
             }
         }
         else if (dir == "left")
         {
-            if (currNode.left != null)
+            if (currNode.left != null && !currNode.left.locked && !isRunning)
             {
-                transform.position = currNode.left.data;
+                if (isFacingRight)
+                {
+                    FlipSprite();
+                }
+                StartCoroutine(MoveToPosition(currNode.left.pos, 1));
                 currNode = currNode.left;
             }
         }
         else if (dir == "up")
         {
-
-            if (currNode.up != null)
+            if (currNode.up != null && !currNode.up.locked && !isRunning)
             {
-                transform.position = currNode.up.data;
+                StartCoroutine(MoveToPosition(currNode.up.pos, 1));
                 currNode = currNode.up;
             }
         }
         else
         {
-            if (currNode.down != null)
+            if (currNode.down != null && !currNode.down.locked && !isRunning)
             {
-                transform.position = currNode.down.data;
+                StartCoroutine(MoveToPosition(currNode.down.pos, 1));
                 currNode = currNode.down;
             }
         }
+    }
+
+    public IEnumerator MoveToPosition(Vector2 end, float sec)
+    {
+        isRunning = true;
+        animator.SetBool("onMove", true);
+        float elapsedTime = 0;
+        Vector2 startingPos = transform.position;
+        while (elapsedTime < sec)
+        {
+            transform.position = Vector2.Lerp(startingPos, end, (elapsedTime / sec));
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        transform.position = end;
+        animator.SetBool("onMove", false);
+        isRunning = false;
+    }
+
+    void FlipSprite()
+    {
+        isFacingRight = !isFacingRight;
+        transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+    }
+
+    public void OnEnterBuilding(InputAction.CallbackContext context)
+    {
+        SceneManager.LoadScene(currNode.levelName);
     }
 }

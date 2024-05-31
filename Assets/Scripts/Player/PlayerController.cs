@@ -25,7 +25,11 @@ public class PlayerController : MonoBehaviour
     private float deceleration = 10f;
     [SerializeField] private float frictionAmount;
     private float jumpHeight = 70f;
-    private float wallJumpHeight = 50f;
+
+    private float oldMoveSpeed;
+    private float oldAcceleration;
+    private float oldDeceleration;
+    private float oldJumpHeight;
 
     [Header("Jump")]
     [Range(0, 1f)][SerializeField] float jumpCutMultiplier = 0.5f;
@@ -78,6 +82,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine fallThroughPlatformsCoroutine;
 
     private GameObject currentOneWayPlatform;
+    private GameObject currentMovingPlatform;
 
     private bool onIce;
     [Range(0, 1f)][SerializeField] float iceSlipperiness;
@@ -103,10 +108,12 @@ public class PlayerController : MonoBehaviour
     private float wallJumpDirection;
     private float wallJumpTime = 0.2f;
     private float wallJumpTimer;
+    private Vector2 wallJumpingPower = new Vector2(12f, 12f);
 
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
     private int ammo = 10000;
+    private PlayerEnemyInteraction playerEnemyInteraction;
 
     private void Start()
     {
@@ -127,16 +134,22 @@ public class PlayerController : MonoBehaviour
         deceleration = mediumDeceleration;
         jumpHeight = mediumJumpHeight;
         rb.gravityScale = mediumGravity;
+        oldMoveSpeed = moveSpeed;
+        oldAcceleration = acceleration;
+        oldDeceleration = deceleration;
+        oldJumpHeight = jumpHeight;
 
         inAirShrinkBoostsAvailable = 2;
 
         controlsActive = true;
 
-        
+        playerEnemyInteraction = GetComponent<PlayerEnemyInteraction>();
+        currentMovingPlatform = null;
     }
 
     private void FixedUpdate()
     {
+        //Debug.Log(inAirShrinkBoostsAvailable);
         if (controlsActive)
         {
             Run();
@@ -161,7 +174,8 @@ public class PlayerController : MonoBehaviour
         if (rb.velocity.x < 1 && rb.velocity.x > -1)
         {
             animator.SetBool("onMove", false);
-        } else
+        }
+        else
         {
             animator.SetBool("onMove", true);
 
@@ -191,10 +205,8 @@ public class PlayerController : MonoBehaviour
 
         if (wallJumpTimer > 0f)
         {
-            isWallJumping = true; 
-            float jumpForce = Mathf.Sqrt(wallJumpHeight) * Mathf.Sqrt(rb.gravityScale) * rb.mass; // Makes all sizes jump to same height
-            rb.AddForce(new Vector2 (wallJumpDirection * 5f, jumpForce), ForceMode2D.Impulse);
-
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpDirection * wallJumpingPower.x, wallJumpingPower.y);
             wallJumpTimer = 0f;
 
             if (transform.localScale.x != wallJumpDirection)
@@ -250,7 +262,13 @@ public class PlayerController : MonoBehaviour
 
     void Run()
     {
-        float targetSpeed = moveVal.x * moveSpeed;
+        float baseSpeed = 0f;
+        if (currentMovingPlatform != null) {
+            Rigidbody2D platformrb = currentMovingPlatform.GetComponent<Rigidbody2D>();
+            baseSpeed = platformrb.velocity.x;
+        }
+
+        float targetSpeed = baseSpeed + (moveVal.x * moveSpeed);
         float speedDif = targetSpeed - rb.velocity.x;
 
         float accelRate = acceleration;
@@ -315,7 +333,12 @@ public class PlayerController : MonoBehaviour
         return deceleration;
     }
 
-    private bool IsGrounded()
+    public void SetXVelocity(float v)
+    {
+        rb.velocity = new Vector2(v, rb.velocity.y);
+    }
+
+    public bool IsGrounded()
     {
         float overLapRadius = 0.2f * transform.localScale.y / mediumScale.y; // Scales with current size
         bool grounded = Physics2D.OverlapCircle(groundCheck.position, overLapRadius, groundLayer);
@@ -399,6 +422,11 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.tag == "Ice")
         {
             onIce = true;
+        }
+
+        if (other.gameObject.tag == "Kill")
+        {
+            playerEnemyInteraction.die();
         }
     }
 
@@ -568,7 +596,8 @@ public class PlayerController : MonoBehaviour
 
         float endVelocity = startVelocity;
         // Give speed boost if shrinking
-        if (startScale.y > endScale.y && inAirShrinkBoostsAvailable > 0) {
+        if (startScale.y > endScale.y && inAirShrinkBoostsAvailable > 0)
+        {
             endVelocity = startVelocity * (1 + sizeShiftBoostFactor);
             inAirShrinkBoostsAvailable--;
         }
@@ -602,11 +631,11 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Here");
         if (Time.time - fireCooldownStart > 1 && ammo > 0)
         {
-            Projectile p = (Projectile) Instantiate(projectile, transform.position, transform.rotation);
+            Projectile p = (Projectile)Instantiate(projectile, transform.position, transform.rotation);
             p.SetSpeed(10);
 
             Vector3 offset = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (Vector2) (offset - transform.position);
+            Vector2 direction = (Vector2)(offset - transform.position);
             p.SetDirection(direction.normalized);
 
             fireCooldownStart = Time.time;
@@ -624,13 +653,46 @@ public class PlayerController : MonoBehaviour
         return curSize;
     }
 
+    public void lockMovement()
+    {
+        if (moveSpeed != 0)
+        {
+            oldMoveSpeed = moveSpeed;
+            oldAcceleration = acceleration;
+            oldDeceleration = deceleration;
+            oldJumpHeight = jumpHeight;
+            print(moveSpeed + " " + acceleration + " " + deceleration + " " + jumpHeight);
+            moveSpeed = 0;
+            acceleration = 0;
+            deceleration = 0;
+            jumpHeight = 0;
+            canScale = false;
+        }
+    }
+
+    public void unlockMovement()
+    {
+        moveSpeed = oldMoveSpeed;
+        acceleration = oldAcceleration;
+        jumpHeight = oldJumpHeight;
+        canScale = true;
+        print(moveSpeed + " " + acceleration + " " + deceleration + " " + jumpHeight);
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Goal"))
         {
-            SceneManager.LoadScene("Level1");
+            LevelManager.levelTracker.Add(SceneManager.GetActiveScene().name, true);
+            Debug.Log(LevelManager.levelTracker.Count);
+            SceneManager.LoadScene("Overworld");
         }
-        
+
+
+        if (other.CompareTag("HorizontalPlatform"))
+        {
+            currentMovingPlatform = other.gameObject;
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -640,6 +702,14 @@ public class PlayerController : MonoBehaviour
             Wind w = collision.GetComponent<Wind>();
             rb.AddForce(w.direction * w.force * Time.deltaTime);
             rb.velocity = new Vector2(rb.velocity.x, Math.Clamp(rb.velocity.y, -10, 15));
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("HorizontalPlatform"))
+        {
+            currentMovingPlatform = null;
         }
     }
 }

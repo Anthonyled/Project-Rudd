@@ -79,6 +79,7 @@ GameObject:
   - component: {fileID: 569307004157160154}
   - component: {fileID: 7860116615866855937}
   - component: {fileID: 6213301413455069177}
+  - component: {fileID: 6347078973312790523}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Enemy
@@ -261,6 +262,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6347078973312790523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7873564463186053436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdc6b5ceafb52a04da50c4a8b6d4e2b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 20
 --- !u!1 &7970200621338413839
 GameObject:
   m_ObjectHideFlags: 0

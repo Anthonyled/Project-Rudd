@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Level2_2Manager : MonoBehaviour
 {
     private int keyFragmentsObtained = 0;
-    private int keyFragmentsNeeded = 2;
+    [SerializeField] private int keyFragmentsNeeded = 2;
 
     [SerializeField] private UnityEvent openDoor;
     [SerializeField] private UnityEvent openDoor2;
