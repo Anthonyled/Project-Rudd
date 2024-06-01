@@ -10,12 +10,12 @@ public class MeleeAttack : MonoBehaviour
     SpriteRenderer renderer;
     Animator animator;
     int damage = 5;
-    Collider2D enemyCollision;
+    List<Collider2D> enemyCollision = new List<Collider2D>();
     void Start()
     {
         p = player.GetComponent<PlayerController>();
         renderer = GetComponent<SpriteRenderer>();
-        renderer.enabled = true;
+        renderer.enabled = false;
         animator = player.GetComponent<Animator>();
     }
 
@@ -44,10 +44,12 @@ public class MeleeAttack : MonoBehaviour
         animator.SetTrigger("onAttack");
         if (enemyCollision != null)
         {
-            Damageable enemy = enemyCollision.GetComponent<Damageable>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
+            foreach (Collider2D coll in enemyCollision) { 
+                Damageable enemy = coll.GetComponent<Damageable>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(damage);
+                }
             }
         }
     }
@@ -60,16 +62,20 @@ public class MeleeAttack : MonoBehaviour
     {
         if (other.CompareTag("Enemy") || other.CompareTag("Damageable"))
         {
-            enemyCollision = other;
+            if (!enemyCollision.Contains(other))
+            {
+                enemyCollision.Add(other);
+            }
             Debug.Log("enemy collision");
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy") || other.CompareTag("Damageable"))
+        // Changing colour according to list 
+        if (enemyCollision.Contains(other))
         {
-            enemyCollision = null;
+            enemyCollision.Remove(other);
         }
     }
 }
