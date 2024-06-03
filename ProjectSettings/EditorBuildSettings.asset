@@ -8,15 +8,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hubworld/Street1.unity
     guid: 4ae31ae33827e48d298613aeca7473ba
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hubworld/Building1.unity
     guid: 88beb5bca0020488c8d1a66288581aee
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hubworld/Street2.unity
     guid: 14980b0c774ae4ca093d94e5b54fff9d
+  - enabled: 1
+    path: Assets/Scenes/TItle.unity
+    guid: 5963448c58a8c544e8969016ce74bb00
   - enabled: 1
     path: Assets/Scenes/Forest Levels/L1 Forest.unity
     guid: dc89ce58a562e9b489a789a6c7f5cb67
@@ -50,10 +53,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Science Levels/L4 Science.unity
     guid: 0ca2cb89028779f43a5ef5a15d8ad5aa
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hubworld/Building2.unity
     guid: 5980a2360bec54fa1817c18e48f0d7a4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level1.unity
     guid: b1395622c0896c54bb787c386d241ac6
   - enabled: 1
