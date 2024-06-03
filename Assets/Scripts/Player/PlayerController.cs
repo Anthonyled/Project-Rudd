@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
-    private int ammo = 10000;
+    private int ammo = 0;
     private PlayerEnemyInteraction playerEnemyInteraction;
 
     private void Start()
