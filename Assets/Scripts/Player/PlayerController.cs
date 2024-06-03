@@ -691,6 +691,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.CompareTag("HorizontalPlatform"))
         {
+            Debug.Log("Touching horizontal moving platform");
             currentMovingPlatform = other.gameObject;
         }
     }
@@ -710,6 +711,12 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("HorizontalPlatform"))
         {
             currentMovingPlatform = null;
+        }
+    }
+    public void MovingPlatformChange(float speed, HorizontalMovingPlatform other)
+    {
+        if (other == currentMovingPlatform) {
+            SetXVelocity(speed);
         }
     }
 }

@@ -24,12 +24,12 @@ public class HorizontalMovingPlatform : MonoBehaviour
         if (transform.position.x < pointA.transform.position.x)
         {
             rb.velocity = new Vector2(speed, 0);
-            playerController.SetXVelocity(speed);
+            playerController.MovingPlatformChange(speed, this);
         }
         if (transform.position.x > pointB.transform.position.x)
         {
             rb.velocity = new Vector2(-speed, 0);
-            playerController.SetXVelocity(-speed);
+            playerController.MovingPlatformChange(-speed, this);
         }
     }
 
