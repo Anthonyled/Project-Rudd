@@ -12,7 +12,6 @@ TagManager:
   - Ice
   - Kill
   - HorizontalPlatform
-  - Projectile
   layers:
   - Default
   - TransparentFX

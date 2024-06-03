@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -111,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Projectile projectile;
     private float fireCooldownStart = -3;
-    private int ammo = 0;
+    private int ammo = 10000;
     private PlayerEnemyInteraction playerEnemyInteraction;
 
     private void Start()

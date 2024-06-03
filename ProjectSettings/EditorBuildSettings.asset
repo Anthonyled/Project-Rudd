@@ -8,18 +8,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Hubworld/Street1.unity
     guid: 4ae31ae33827e48d298613aeca7473ba
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Hubworld/Building1.unity
     guid: 88beb5bca0020488c8d1a66288581aee
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Hubworld/Street2.unity
     guid: 14980b0c774ae4ca093d94e5b54fff9d
-  - enabled: 1
-    path: Assets/Scenes/TItle.unity
-    guid: 5963448c58a8c544e8969016ce74bb00
   - enabled: 1
     path: Assets/Scenes/Forest Levels/L1 Forest.unity
     guid: dc89ce58a562e9b489a789a6c7f5cb67
@@ -33,30 +30,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Forest Levels/L4 Forest.unity
     guid: dc906fc02ad7e6a418e990776dd24871
   - enabled: 1
-    path: Assets/Scenes/Cave Levels/L1 Cave.unity
-    guid: 4bd51dc01265e58488ffc7441e792e7a
-  - enabled: 1
-    path: Assets/Scenes/Cave Levels/L2 Cave.unity
-    guid: ccfc4621e6e56414aac638ef7c07a909
-  - enabled: 1
-    path: Assets/Scenes/Cave Levels/L3 Cave.unity
-    guid: 3ca95bba4ad1248a48513288caebfc24
-  - enabled: 1
-    path: Assets/Scenes/Cave Levels/L4 Cave.unity
-    guid: 1ee79deb25e45414b8589c96dbf5334a
-  - enabled: 1
-    path: Assets/Scenes/Science Levels/L1 Science.unity
-    guid: 193aa5538170a454aa973dd8bab34c86
-  - enabled: 1
-    path: Assets/Scenes/Science Levels/L3 Science.unity
-    guid: 555c96398f06e46aeba14723aa9ef2ba
-  - enabled: 1
-    path: Assets/Scenes/Science Levels/L4 Science.unity
-    guid: 0ca2cb89028779f43a5ef5a15d8ad5aa
-  - enabled: 0
     path: Assets/Scenes/Hubworld/Building2.unity
     guid: 5980a2360bec54fa1817c18e48f0d7a4
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: b1395622c0896c54bb787c386d241ac6
   - enabled: 1
