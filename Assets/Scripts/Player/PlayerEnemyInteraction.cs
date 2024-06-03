@@ -21,6 +21,14 @@ public class PlayerEnemyInteraction : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Projectile"))
+        {
+            takeDamage();
+        }
+    }
+
     public void takeDamage() {
         health.takeDamage();
     }
