@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] GameObject player;
     [SerializeField] private LayerMask groundLayer;
 
     int speed = 0;
@@ -28,8 +27,8 @@ public class Projectile : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Destroy(gameObject);
             }
+            Destroy(gameObject);
         }
     }
 

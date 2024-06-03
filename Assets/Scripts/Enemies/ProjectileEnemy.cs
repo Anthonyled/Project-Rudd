@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using UnityEngine;
 
 public class ProjectileEnemy : MonoBehaviour
 {
-    public GameObject bullet;
+    public Projectile bullet;
     public Transform bulletPos;
     private Rigidbody2D bulletRb;
     private Rigidbody2D rb;
@@ -13,6 +14,7 @@ public class ProjectileEnemy : MonoBehaviour
     [SerializeField] float bulletSpeed;
     [SerializeField] float bulletHeight;
     [SerializeField] float fireDelay;
+    Vector3 fireDirection = new Vector3 (0, -1, 0);
     private PlayerEnemyInteraction interaction;
     // Start is called before the first frame update
     void Start()
@@ -29,8 +31,9 @@ public class ProjectileEnemy : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > fireDelay) {
             timer = 0;
-            bulletRb.position = transform.position;
-            bulletRb.velocity = new Vector2(-bulletSpeed + rb.velocity.x, bulletHeight);
+            Projectile p = (Projectile) Instantiate(bullet, transform.position + (Vector3)fireDirection * 2, transform.rotation);
+            p.SetSpeed(10);
+            p.SetDirection(fireDirection);
         }
     }
 
