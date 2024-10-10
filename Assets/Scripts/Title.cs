@@ -18,5 +18,10 @@ public class Title : MonoBehaviour
         {
             SceneManager.LoadScene("Overworld");
         }
+
+         if (Input.GetKey(KeyCode.C))
+        {
+            SceneManager.LoadScene("Building2");
+        }
     }
 }
